@@ -1,14 +1,17 @@
-type Product = {
-  category?: object;
+export type Product = {
+  category?: Category;
   category_id?: number;
-  description?: string;
-  id?: number;
+  description: string;
+  id: number;
   pictures: Array<string>;
-  price?: number;
+  price: number;
   tags: Array<Tag>;
   title?: string;
 };
-
+type Category = {
+    title: string;
+    description: string;
+}
 type Tag = {
   title: string;
   id: number;
@@ -33,4 +36,11 @@ export async function getProducts(): Promise<Product[]> {
     console.log("Error al buscar los productos");
     throw error;
   }
+  
 }
+export async function getProductById(id: number): Promise<Product | null> {
+  const products = await getProducts();
+  const product = products.find((p) => p.id === id);
+  return product || null;
+}
+

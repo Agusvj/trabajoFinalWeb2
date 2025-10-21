@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 type Product = {
   category?: object;
   category_id?: number;
@@ -48,9 +50,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
         )}
 
-        <h3 className="mt-4 text-lg font-medium text-gray-900 whitespace-nowrap overflow-hidden text-ellipsis">
+        <Link
+           to={`/detalle/${product.id}`}
+           className="hover:underline text-gray-900"
+           >
           {product.title}
-        </h3>
+        </Link>
 
         <p className="mt-1.5 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
           {product.description
