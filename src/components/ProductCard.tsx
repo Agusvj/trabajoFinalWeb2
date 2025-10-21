@@ -38,7 +38,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           product.tags?.map((tag) => (
             <span
               key={tag.id}
-              className="bg-yellow-400 px-3 py-1.5 text-xs font-medium whitespace-nowrap mr-2"
+              className="bg-teal-300 px-3 py-1.5 text-xs font-medium whitespace-nowrap mr-2 rounded-sm"
             >
               {" "}
               {tag.title}{" "}
@@ -68,7 +68,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <form className="mt-4">
-          <button className="block w-full rounded-sm bg-yellow-400 p-4 text-sm font-medium transition hover:scale-105">
+          <button className="block w-full bg-teal-500 p-4 text-sm font-medium transition hover:scale-105 rounded-sm">
             Add to Cart
           </button>
         </form>

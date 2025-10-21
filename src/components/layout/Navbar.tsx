@@ -11,6 +11,7 @@ export default function Navbar() {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -77,16 +78,37 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <div className="sm:flex sm:gap-4">
-              <a
-                className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm dark:hover:bg-teal-500"
-                href="#"
-              >
-                Login
-              </a>
+              <button className="relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart text-teal-400"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M17 17h-11v-14h-2" />
+                  <path d="M6 5l14 1l-1 7h-13" />
+                </svg>
+
+                <span className="text-center absolute bottom-0 right-0 z-10 bg-red-600/90 rounded-full h-4 w-4 text-white text-xs flex items-center justify-center">
+                  0
+                </span>
+              </button>
             </div>
 
             <div className="block md:hidden">
-              <button className="rounded-sm bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75 dark:bg-gray-800 dark:text-white dark:hover:text-white/75">
+              <button
+                className="rounded-sm bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75 dark:bg-gray-800 dark:text-white dark:hover:text-white/75"
+                onClick={() => setOpen(!open)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-5"
@@ -103,6 +125,39 @@ export default function Navbar() {
                 </svg>
               </button>
             </div>
+
+            {
+              /* Mobile menu */
+
+              open && (
+                <div className="absolute top-16 left-0 w-full bg-white dark:bg-gray-900 md:hidden">
+                  <nav aria-label="Global">
+                    <ul className="flex flex-col items-center gap-3 text-sm">
+                      {categories.length > 0 ? (
+                        categories.map((cat) => (
+                          <li key={cat.id} className="p-2">
+                            <a
+                              className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
+                              href="#"
+                            >
+                              {cat.title}
+                            </a>
+                          </li>
+                        ))
+                      ) : error ? (
+                        <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75">
+                          {error}
+                        </li>
+                      ) : (
+                        <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75 font-bold">
+                          Cargando...
+                        </li>
+                      )}
+                    </ul>
+                  </nav>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
