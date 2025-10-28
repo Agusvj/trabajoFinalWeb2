@@ -1,22 +1,4 @@
-export type Product = {
-  category?: Category;
-  category_id?: number;
-  description: string;
-  id: number;
-  pictures: Array<string>;
-  price: number;
-  tags: Array<Tag>;
-  title?: string;
-};
-type Category = {
-    title: string;
-    description: string;
-}
-type Tag = {
-  title: string;
-  id: number;
-};
-
+import type { Product } from "../types/entities";
 export async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch(

@@ -1,24 +1,6 @@
 import { Link } from "react-router-dom";
+import type { Product } from "../types/entities";
 
-type Product = {
-  category?: Category;
-  category_id?: number;
-  description?: string;
-  id: number;
-  pictures: Array<string>;
-  price: number;
-  tags: Array<Tag>;
-  title?: string;
-};
-
-type Tag = {
-  title: string;
-  id: number;
-};
-type Category = {
-  title: string;
-  description: string;
-};
 type ProductDetailProps = {
   product: Product;
 };
