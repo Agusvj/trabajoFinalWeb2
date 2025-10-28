@@ -51,10 +51,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         <Link
-           to={`/detalle/${product.id}`}
-           className="hover:underline text-gray-900"
-           >
-          {product.title}
+          to={`/detalle/${product.id}`}
+          className="hover:underline text-gray-900 "
+        >
+          <p className="mt-4 text-lg font-medium text-gray-900">
+            {product.title}
+          </p>
         </Link>
 
         <p className="mt-1.5 text-sm text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">

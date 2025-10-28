@@ -1,15 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProductById } from "../data/products";
-import ProductDetail from "../components/layout/ProductDetail"
+import ProductDetail from "../components/ProductDetail";
 import type { Product } from "../data/products";
-
-
 
 export default function ProductDetailWrapper() {
   const { productId } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
-
 
   useEffect(() => {
     if (productId) {
