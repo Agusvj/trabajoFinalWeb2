@@ -56,7 +56,7 @@ export default function Navbar() {
                     <li key={category.id}>
                       
                       <Link
-                        to={`/categorias/${category.id}`}
+                        to={`/categorias/${category.id}`}  
                         className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
                         
                       >
@@ -135,14 +135,16 @@ export default function Navbar() {
                   <nav aria-label="Global">
                     <ul className="flex flex-col items-center gap-3 text-sm">
                       {categories.length > 0 ? (
-                        categories.map((cat) => (
-                          <li key={cat.id} className="p-2">
-                            <a
+                        categories.map((category) => (
+                          <li key={category.id} className="p-2">
+                            <Link
+                               to={`/categorias/${category.id}`}
+                               onClick={()=> setOpen(false)}
                               className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-                              href="#"
+                            
                             >
-                              {cat.title}
-                            </a>
+                              {category.title}
+                            </Link>
                           </li>
                         ))
                       ) : error ? (
