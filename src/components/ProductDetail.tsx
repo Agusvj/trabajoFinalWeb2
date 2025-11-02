@@ -45,7 +45,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <li>
               <div className="flex items-center">
                 <Link
-                  to={`/listado?cat=${product.category_id}`}
+                  to={`/categorias/${product.category_id}`}
                   className="mr-2 text-sm font-medium text-gray-900"
                 >
                   {product.category?.title}
@@ -62,7 +62,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               </div>
             </li>
             <li>
-              <div>
+              <div className="flex items-center">
                 <p className="mr-2 text-sm font-medium text-gray-900">
                   {product.title}
                 </p>

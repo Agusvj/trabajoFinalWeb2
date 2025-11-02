@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { getCategories } from "../../data/categories";
+import { Link } from "react-router-dom";
+import type { Category } from "../../types/entities";
 
 export default function Navbar() {
-  type Category = {
-    description: string;
-    id: number;
-    picture: string;
-    title: string;
-  };
+ 
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +30,9 @@ export default function Navbar() {
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="md:flex md:items-center md:gap-12">
-            <a className="block text-teal-600 dark:text-teal-600" href="#">
+            <Link 
+               to={`/home/`}
+               className="block text-teal-600 dark:text-teal-600">
               <span className="sr-only">Home</span>
               <svg
                 className="h-8"
@@ -46,21 +45,23 @@ export default function Navbar() {
                   fill="currentColor"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:block">
             <nav aria-label="Global">
               <ul className="flex items-center gap-6 text-sm">
                 {categories.length > 0 ? (
-                  categories.map((cat) => (
-                    <li key={cat.id}>
-                      <a
+                  categories.map((category) => (
+                    <li key={category.id}>
+                      
+                      <Link
+                        to={`/categorias/${category.id}`}
                         className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-                        href="#"
+                        
                       >
-                        {cat.title}
-                      </a>
+                        {category.title}
+                      </Link>
                     </li>
                   ))
                 ) : error ? (

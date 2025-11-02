@@ -20,10 +20,3 @@ export type Tag = {
   id: number;
 };
 
-export type HomeFiltersProps = {
-  filterByPrice: (minPrice: number, maxPrice: number) => void;
-  resetProducts: () => void;
-  filterByValue: (value: string) => void;
-  tags: Array<{ title: string; id: number }>;
-  filterByTag: (tagId: number) => void;
-};

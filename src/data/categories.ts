@@ -19,3 +19,12 @@ export async function getCategories(): Promise<Category[]> {
     throw error;
   }
 }
+export async function getCategoriesById(id: number): Promise<Category| undefined>  {
+  const categories = await getCategories();
+  const cat = categories.find((p) => p.id ===id);
+  return cat;
+
+  
+}
+
+
