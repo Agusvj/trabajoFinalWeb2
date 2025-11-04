@@ -1,9 +1,12 @@
-import AppRouter from "./routes/AppRouter.tsx";
+import AppRouter from "./routes/AppRouter";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   return (
     <>
-      <AppRouter />
+      <CartProvider>
+        <AppRouter />
+      </CartProvider>
     </>
   );
 }
