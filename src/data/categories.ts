@@ -1,10 +1,4 @@
-type Category = {
-  description: string;
-  id: number;
-  picture: string;
-  title: string;
-};
-
+import type { Category } from "../types/entities";
 export async function getCategories(): Promise<Category[]> {
   try {
     const res = await fetch(
@@ -25,3 +19,12 @@ export async function getCategories(): Promise<Category[]> {
     throw error;
   }
 }
+export async function getCategoriesById(id: number): Promise<Category| undefined>  {
+  const categories = await getCategories();
+  const cat = categories.find((p) => p.id ===id);
+  return cat;
+
+  
+}
+
+

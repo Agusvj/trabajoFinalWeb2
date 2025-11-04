@@ -1,24 +1,11 @@
 import { Link } from "react-router";
+import type { Product } from "../types/entities";
 
-type Product = {
-  category?: object;
-  category_id?: number;
-  description?: string;
-  id?: number;
-  pictures: Array<string>;
-  price?: number;
-  tags: Array<Tag>;
-  title?: string;
-};
 
 type ProductCardProps = {
   product: Product;
 };
 
-type Tag = {
-  title: string;
-  id: number;
-};
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (

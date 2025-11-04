@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProductById } from "../data/products";
 import ProductDetail from "../components/ProductDetail";
-import type { Product } from "../data/products";
+import type { Product } from "../types/entities";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function ProductDetailWrapper() {
   const { productId } = useParams();
@@ -16,7 +17,7 @@ export default function ProductDetailWrapper() {
     }
   }, [productId]);
 
-  if (!product) return <p>Cargando producto...</p>;
+  if (!product) return <LoadingSpinner/>;
 
   return <ProductDetail product={product} />;
 }

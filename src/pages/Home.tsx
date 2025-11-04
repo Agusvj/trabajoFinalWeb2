@@ -2,23 +2,12 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import HomeFilters from "../components/HomeFilters";
+import type { Product, Tag, } from "../types/entities";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Home() {
-  type Product = {
-    category?: object;
-    category_id?: number;
-    description?: string;
-    id?: number;
-    pictures: Array<string>;
-    price?: number;
-    tags: Array<Tag>;
-    title?: string;
-  };
+ 
 
-  type Tag = {
-    title: string;
-    id: number;
-  };
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productsBackup, setProductsBackup] = useState<Product[]>([]);
@@ -119,7 +108,7 @@ export default function Home() {
         />
 
         {loading ? (
-          <p className="text-center font-bold">Cargando...</p>
+          <LoadingSpinner/>
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
         ) : (

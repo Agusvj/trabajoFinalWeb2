@@ -1,24 +1,6 @@
 import { Link } from "react-router-dom";
+import type { Product } from "../types/entities";
 
-type Product = {
-  category?: Category;
-  category_id?: number;
-  description?: string;
-  id: number;
-  pictures: Array<string>;
-  price: number;
-  tags: Array<Tag>;
-  title?: string;
-};
-
-type Tag = {
-  title: string;
-  id: number;
-};
-type Category = {
-  title: string;
-  description: string;
-};
 type ProductDetailProps = {
   product: Product;
 };
@@ -63,7 +45,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <li>
               <div className="flex items-center">
                 <Link
-                  to={`/listado?cat=${product.category_id}`}
+                  to={`/categorias/${product.category_id}`}
                   className="mr-2 text-sm font-medium text-gray-900"
                 >
                   {product.category?.title}
@@ -80,7 +62,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               </div>
             </li>
             <li>
-              <div>
+              <div className="flex items-center">
                 <p className="mr-2 text-sm font-medium text-gray-900">
                   {product.title}
                 </p>
