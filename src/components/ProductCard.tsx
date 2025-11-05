@@ -1,13 +1,13 @@
 import { Link } from "react-router";
 import type { Product } from "../types/entities";
-
+import { useCart } from "../hooks/useCart";
 
 type ProductCardProps = {
   product: Product;
 };
 
-
 export default function ProductCard({ product }: ProductCardProps) {
+  const { addToCart } = useCart();
   return (
     <div className="group relative block overflow-hidden">
       <img
@@ -57,7 +57,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <form className="mt-4">
-          <button className="block w-full bg-teal-500 p-4 text-sm font-medium transition hover:scale-105 rounded-sm">
+          <button
+            className="block w-full bg-teal-500 p-4 text-sm font-medium transition hover:scale-105 rounded-sm"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(product, 1);
+            }}
+          >
             Add to Cart
           </button>
         </form>

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { getCategories } from "../../data/categories";
 import { Link } from "react-router-dom";
 import type { Category } from "../../types/entities";
+import { useCart } from "../../hooks/useCart";
 
 export default function Navbar() {
- 
-
+  const { openCart, cartItems } = useCart();
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -30,9 +30,10 @@ export default function Navbar() {
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="md:flex md:items-center md:gap-12">
-            <Link 
-               to={`/home/`}
-               className="block text-teal-600 dark:text-teal-600">
+            <Link
+              to={`/home/`}
+              className="block text-teal-600 dark:text-teal-600"
+            >
               <span className="sr-only">Home</span>
               <svg
                 className="h-8"
@@ -54,11 +55,9 @@ export default function Navbar() {
                 {categories.length > 0 ? (
                   categories.map((category) => (
                     <li key={category.id}>
-                      
                       <Link
-                        to={`/categorias/${category.id}`}  
+                        to={`/categorias/${category.id}`}
                         className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-                        
                       >
                         {category.title}
                       </Link>
@@ -79,7 +78,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <div className="sm:flex sm:gap-4">
-              <button className="relative">
+              <button className="relative" onClick={openCart}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="30"
@@ -100,7 +99,7 @@ export default function Navbar() {
                 </svg>
 
                 <span className="text-center absolute bottom-0 right-0 z-10 bg-red-600/90 rounded-full h-4 w-4 text-white text-xs flex items-center justify-center">
-                  0
+                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
                 </span>
               </button>
             </div>
@@ -138,10 +137,9 @@ export default function Navbar() {
                         categories.map((category) => (
                           <li key={category.id} className="p-2">
                             <Link
-                               to={`/categorias/${category.id}`}
-                               onClick={()=> setOpen(false)}
+                              to={`/categorias/${category.id}`}
+                              onClick={() => setOpen(false)}
                               className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75"
-                            
                             >
                               {category.title}
                             </Link>

@@ -1,4 +1,4 @@
-import { useCart } from "../context/CartContext";
+import { useCart } from "../hooks/useCart";
 
 export default function Cart() {
   const { isOpen, closeCart, cartItems, removeFromCart, updateQuantity } =
@@ -38,20 +38,15 @@ export default function Cart() {
       <div className="mt-4 space-y-6">
         <ul className="space-y-4">
           {cartItems.map((item) => (
-            <li
-              className="flex items-center gap-4"
-              key={item.product.product.id}
-            >
+            <li className="flex items-center gap-4" key={item.product.id}>
               <img
                 src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
-                alt={item.product.product.title}
+                alt={item.product.title}
                 className="size-16 rounded-sm object-cover"
               />
 
               <div>
-                <h3 className="text-sm text-gray-900">
-                  {item.product.product.id}
-                </h3>
+                <h3 className="text-sm text-gray-900">{item.product.title}</h3>
 
                 <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                   <div>
@@ -76,7 +71,10 @@ export default function Cart() {
                   <input
                     type="number"
                     min="1"
-                    value="1"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateQuantity(item.product.id, parseInt(e.target.value))
+                    }
                     id="Line1Qty"
                     className="h-8 w-12 rounded-sm border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-hidden [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                   />
@@ -84,7 +82,7 @@ export default function Cart() {
 
                 <button
                   className="text-gray-600 transition hover:text-red-600"
-                  onClick={() => removeFromCart(item.product.product.id)}
+                  onClick={() => removeFromCart(item.product.id)}
                 >
                   <span className="sr-only">Remove item</span>
 
