@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import type { Product } from "../types/entities";
+import { useCart } from "../hooks/useCart";
 
 type ProductDetailProps = {
   product: Product;
 };
 
 export default function ProductDetail({ product }: ProductDetailProps) {
+  const { addToCart } = useCart();
   const galleryImages = [0, 1, 2, 3].map((i) => {
     const src = product.pictures[i % product.pictures.length];
     let classes = "rounded-lg object-cover";
@@ -108,7 +110,13 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               ))}
             </div>
 
-            <button className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-blue-800 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden">
+            <button
+              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-blue-800 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+              onClick={(e) => {
+                e.preventDefault();
+                addToCart(product, 1);
+              }}
+            >
               Agregar al Carrito
             </button>
           </div>

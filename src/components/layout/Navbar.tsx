@@ -5,7 +5,7 @@ import type { Category } from "../../types/entities";
 import { useCart } from "../../hooks/useCart";
 
 export default function Navbar() {
-  const { openCart, cartItems } = useCart();
+  const { cartItems, toggleCart } = useCart();
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -78,7 +78,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <div className="sm:flex sm:gap-4">
-              <button className="relative" onClick={openCart}>
+              <button className="relative" onClick={toggleCart}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="30"

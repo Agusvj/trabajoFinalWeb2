@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import type { Product } from "../types/entities";
 
 interface CartItem {
@@ -13,10 +13,12 @@ interface CartContextType {
   cartItems: CartItem[];
   openCart: () => void;
   closeCart: () => void;
+  toggleCart: () => void;
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   getCartTotal: () => number;
+  clearCart: () => void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(
@@ -25,9 +27,18 @@ export const CartContext = createContext<CartContextType | undefined>(
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+  const toggleCart = () => setIsOpen(!isOpen);
 
   const addToCart = (product: Product, quantity: number) => {
     setCartItems((prevItems) => {
@@ -71,6 +82,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -78,10 +93,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cartItems,
         openCart,
         closeCart,
+        toggleCart,
         addToCart,
         removeFromCart,
         updateQuantity,
         getCartTotal,
+        clearCart,
       }}
     >
       {children}
