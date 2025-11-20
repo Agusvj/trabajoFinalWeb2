@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import ProductDetailWrapper from "../pages/ProductDetailWrapper";
 import ProductCategories from "../pages/ProductCategories";
 import Checkout from "../pages/Checkout";
+import Admin from "../pages/Admin";
 
 export default function AppRouter() {
   return (
@@ -14,6 +15,7 @@ export default function AppRouter() {
         <Route path="/detalle/:productId" element={<ProductDetailWrapper />} />
         <Route path="/categorias/:categoryId" element={<ProductCategories />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
     </Routes>
   );
