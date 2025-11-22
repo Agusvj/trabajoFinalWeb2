@@ -1,6 +1,7 @@
 // src/components/admin/ProductModal.tsx
 import { useState } from "react";
 import type { Product, Category } from "../../types/entities";
+import {  useProducts} from "../../data/crudProduct"; 
 
 type ProductModalProps = {
   isOpen: boolean;
@@ -8,6 +9,7 @@ type ProductModalProps = {
   product?: Product;
   categories: Category[];
   mode: "create" | "edit";
+  onSave:(newProduct: Product) => void;
 };
 
 export default function ProductModal({
@@ -16,7 +18,11 @@ export default function ProductModal({
   product,
   categories,
   mode,
+  onSave,
 }: ProductModalProps) {
+
+  const{ createProduct, updateProduct } = useProducts();
+
   const [formData, setFormData] = useState({
     title: product?.title || "",
     description: product?.description || "",
@@ -27,11 +33,24 @@ export default function ProductModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =  async (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: API call logic
+    const dataToSend = {
+      ...formData,
+      category_id : Number(formData.category_id),
+      pictures:[formData.pictures],
+
+    };
     console.log("Form data:", formData);
-    onClose();
+    if(mode === "create"){
+      const newProduct = await createProduct(dataToSend);
+      onSave(newProduct);
+    } else{
+      const updatedProduct = await updateProduct(product!.id, dataToSend);
+      onSave(updatedProduct);
+    }
+     onClose();
   };
 
   return (

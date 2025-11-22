@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Product, Category } from "../../types/entities";
 import ProductModal from "./ProductModal";
 import DeleteModal from "./DeleteModal";
+import { useProducts } from "../../data/crudProduct";
 
 type ProductsTableProps = {
   products: Product[];
@@ -13,6 +14,7 @@ export default function ProductsTable({
   products,
   categories,
 }: ProductsTableProps) {
+  const[productsState, setProductsState] = useState<Product[]>(products);
   const [productModal, setProductModal] = useState<{
     isOpen: boolean;
     mode: "create" | "edit";
@@ -24,6 +26,8 @@ export default function ProductsTable({
     product?: Product;
   }>({ isOpen: false });
 
+  const {deleteProduct} = useProducts();
+
   const handleEdit = (product: Product) => {
     setProductModal({ isOpen: true, mode: "edit", product });
   };
@@ -32,10 +36,31 @@ export default function ProductsTable({
     setDeleteModal({ isOpen: true, product });
   };
 
-  const confirmDelete = () => {
-    // TODO: API call logic
-    console.log("Deleting product:", deleteModal.product);
-    setDeleteModal({ isOpen: false });
+  const confirmDelete = async () => {
+    try{
+      if(!deleteModal.product) return;
+      await deleteProduct(deleteModal.product.id);
+      setProductsState(prev => 
+        prev.filter(p => p.id !== deleteModal.product!.id)
+      );
+
+      console.log("Deleting product:", deleteModal.product);
+
+     setDeleteModal({ isOpen: false });
+      }catch(error){
+      console.error("Error deleting product:", error);
+     };
+  };
+
+
+  const handleProductSaved = (newProduct: Product) =>{
+    setProductsState((prevProducts) =>{
+      const exists = prevProducts.some (p =>p.id === newProduct.id);
+      if(exists) {
+        return prevProducts.map(p => p.id === newProduct.id ? newProduct : p);
+      }
+      return [...prevProducts, newProduct];
+    });
   };
 
   return (
@@ -78,7 +103,7 @@ export default function ProductsTable({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => (
+              {productsState.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
@@ -148,7 +173,7 @@ export default function ProductsTable({
           </table>
         </div>
 
-        {products.length === 0 && (
+        {productsState.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">No hay productos disponibles</p>
           </div>
@@ -161,6 +186,7 @@ export default function ProductsTable({
         product={productModal.product}
         categories={categories}
         mode={productModal.mode}
+        onSave = {handleProductSaved}
       />
 
       <DeleteModal
