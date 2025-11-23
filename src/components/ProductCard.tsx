@@ -9,7 +9,7 @@ type ProductCardProps = {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   return (
-    <div className=" rounded-2xl border-gray-20 border-2 group relative block overflow-hidden w-60">
+    <div className="rounded-2xl border-gray-20 border-2 group relative block overflow-hidden">
       <img
         src={
           product.pictures?.length > 0
@@ -17,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             : "https://placehold.co/400x400?text=Producto+sin+foto"
         }
         alt=""
-        className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-40"
+        className="h-64 w-full object-cover transition duration-500 group-hover:scale-105"
       />
 
       <div className="relative border border-gray-100 bg-white p-6 ">
