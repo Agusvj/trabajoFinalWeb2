@@ -1,38 +1,47 @@
-
-import { useEffect, useState } from "react";
-import  type { Category } from "../types/entities";
-import type { Product } from "../types/entities";
+// src/components/ProductList.tsx
+import type { Category } from "../types/entities";
 import ProductCard from "./ProductCard";
-import { getProducts } from "../data/products";
+import HomeFilters from "./HomeFilters";
 import LoadingSpinner from "./LoadingSpinner";
+import { useProductFilters } from "../hooks/useProductFilters";
 
 type ProductListCategory = {
-    category : Category;
-}
-export default function ProductList ({category}: ProductListCategory){
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
+  category: Category;
+};
 
-    useEffect(() =>{
-        getProducts().then((data)=>{
-            const filtered = data.filter((p)=>p.category_id === category.id);
-            setProducts(filtered);
-        })
-        .finally(()=> setLoading(false));
-    },[category.id]);
+export default function ProductList({ category }: ProductListCategory) {
+  const {
+    products,
+    loading,
+    tags,
+    filterByPrice,
+    filterByValue,
+    filterByTag,
+    resetProducts,
+  } = useProductFilters(category);
 
-    if (loading) return <LoadingSpinner/>;
-    if(products.length === 0) return <p>No hay productos en esta categoría</p>;
-    return(
-        <div>
-            <h2 className="text-2xl font-bold mb-4">{category.title}</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {products.map((product)=>(
-                    <ProductCard key= {product.id} product= {product}/>
-                ))}
-            </div>
-        </div>
-    );
+  if (loading) return <LoadingSpinner />;
+  if (products.length === 0) return <p>No hay productos en esta categoría</p>;
 
- 
+  return (
+    <div className="bg-gray-100 mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+        {category.title}
+      </h2>
+
+      <HomeFilters
+        filterByPrice={filterByPrice}
+        resetProducts={resetProducts}
+        filterByValue={filterByValue}
+        tags={tags}
+        filterByTag={filterByTag}
+      />
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
 }
