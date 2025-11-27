@@ -87,7 +87,7 @@ export default function Home() {
 
   return (
     <section>
-      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <div className=" bg-gray-100 mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <header>
           <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
             Nuestros Productos
@@ -113,7 +113,7 @@ export default function Home() {
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
         ) : (
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />

@@ -9,7 +9,7 @@ type ProductCardProps = {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   return (
-    <div className="group relative block overflow-hidden">
+    <div className="rounded-2xl border-gray-20 border-2 group relative block overflow-hidden">
       <img
         src={
           product.pictures?.length > 0
@@ -17,15 +17,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             : "https://placehold.co/400x400?text=Producto+sin+foto"
         }
         alt=""
-        className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
+        className="h-64 w-full object-cover transition duration-500 group-hover:scale-105"
       />
 
-      <div className="relative border border-gray-100 bg-white p-6">
+      <div className="relative border border-gray-100 bg-white p-6 ">
         {product.tags.length > 0 ? (
           product.tags?.map((tag) => (
             <span
               key={tag.id}
-              className="bg-teal-300 px-3 py-1.5 text-xs font-medium whitespace-nowrap mr-2 rounded-sm"
+              className="bg-[hsl(34,96%,47%)] px-3 py-1.5 text-xs text-white font-medium whitespace-nowrap mr-2 rounded-sm"
             >
               {" "}
               {tag.title}{" "}
@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <Link
           to={`/detalle/${product.id}`}
-          className="hover:underline text-gray-900 "
+          className="hover:underline  text-gray-900 "
         >
           <p className="mt-4 text-lg font-medium text-gray-900 whitespace-nowrap text-ellipsis overflow-hidden">
             {product.title}
@@ -58,13 +58,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <form className="mt-4">
           <button
-            className="block w-full bg-teal-500 p-4 text-sm font-medium transition hover:scale-105 rounded-sm"
+            className="block w-full bg-[hsl(210,71%,31%)] h-12 p-2 text-base  font-medium transition hover:scale-105 rounded-full text-white"
             onClick={(e) => {
               e.preventDefault();
               addToCart(product, 1);
             }}
           >
-            Add to Cart
+            Agregar al Carrito
           </button>
         </form>
       </div>

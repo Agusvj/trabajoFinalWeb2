@@ -1,12 +1,14 @@
 // src/components/admin/CategoryModal.tsx
 import { useState } from "react";
 import type { Category } from "../../types/entities";
+import {useCategories} from "../../data/crudCategories";
 
 type CategoryModalProps = {
   isOpen: boolean;
   onClose: () => void;
   category?: Category;
   mode: "create" | "edit";
+  onSave:(newCategory: Category) =>void;
 };
 
 export default function CategoryModal({
@@ -14,7 +16,9 @@ export default function CategoryModal({
   onClose,
   category,
   mode,
+  onSave,
 }: CategoryModalProps) {
+  const{createCategory, updateCategory } = useCategories();
   const [formData, setFormData] = useState({
     title: category?.title || "",
     description: category?.description || "",
@@ -23,10 +27,21 @@ export default function CategoryModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: API call logic
+    const dataToSend = {
+      ...formData,
+      picture:[formData.picture],
+    };
     console.log("Form data:", formData);
+    if(mode === "create"){
+      const newCategory = await createCategory(dataToSend);
+      onSave(newCategory);
+     } else{
+      const updatedCategory = await updateCategory(category!.id, dataToSend);
+     onSave(updatedCategory);
+    }
     onClose();
   };
 
