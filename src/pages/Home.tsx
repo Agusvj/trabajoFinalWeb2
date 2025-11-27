@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import HomeFilters from "../components/HomeFilters";
-import type { Product, Tag, } from "../types/entities";
+import type { Product, Tag } from "../types/entities";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Home() {
- 
-
-
   const [products, setProducts] = useState<Product[]>([]);
   const [productsBackup, setProductsBackup] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +45,13 @@ export default function Home() {
   function filterByValue(value: string) {
     const sortedProducts = [...products];
     if (value === "alphabeticalAsc") {
-      sortedProducts.sort((a, b) => (a.title! > b.title! ? 1 : -1));
+      sortedProducts.sort((a, b) =>
+        a.title!.toLowerCase() > b.title!.toLowerCase() ? 1 : -1
+      );
     } else if (value === "alphabeticalDesc") {
-      sortedProducts.sort((a, b) => (a.title! < b.title! ? 1 : -1));
+      sortedProducts.sort((a, b) =>
+        a.title!.toLowerCase() < b.title!.toLowerCase() ? 1 : -1
+      );
     } else if (value === "menorAmayor") {
       sortedProducts.sort((a, b) => (a.price! < b.price! ? 1 : -1));
     } else if (value === "mayorAmenor") {
@@ -108,7 +109,7 @@ export default function Home() {
         />
 
         {loading ? (
-          <LoadingSpinner/>
+          <LoadingSpinner />
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
         ) : (
