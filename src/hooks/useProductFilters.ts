@@ -1,4 +1,3 @@
-// src/hooks/useProductFilters.ts
 import { useState, useEffect } from "react";
 import { getProducts } from "../data/products";
 import type { Product, Tag, Category } from "../types/entities";
@@ -10,6 +9,7 @@ export const useProductFilters = (categoryFilter?: Category) => {
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -29,7 +29,7 @@ export const useProductFilters = (categoryFilter?: Category) => {
           (tag, index, self) => index === self.findIndex((t) => t.id === tag.id)
         );
         setTags(uniqueTags);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los productos");
       } finally {
         setLoading(false);
@@ -37,6 +37,21 @@ export const useProductFilters = (categoryFilter?: Category) => {
     }
     fetchData();
   }, [categoryFilter?.id]);
+
+  const filterBySearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setProducts(productsBackup);
+      return;
+    }
+
+    const filtered = productsBackup.filter(
+      (product) =>
+        product.title?.toLowerCase().includes(query.toLowerCase()) ||
+        product.description?.toLowerCase().includes(query.toLowerCase())
+    );
+    setProducts(filtered);
+  };
 
   const filterByPrice = (min: number, max: number) => {
     const filteredProducts = productsBackup.filter(
@@ -85,6 +100,7 @@ export const useProductFilters = (categoryFilter?: Category) => {
   const resetProducts = () => {
     setProducts(productsBackup);
     setSelectedTags([]);
+    setSearchQuery("");
   };
 
   return {
@@ -95,6 +111,7 @@ export const useProductFilters = (categoryFilter?: Category) => {
     filterByPrice,
     filterByValue,
     filterByTag,
+    filterBySearch,
     resetProducts,
   };
 };

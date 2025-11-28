@@ -2,6 +2,7 @@
 import type { Category } from "../types/entities";
 import ProductCard from "./ProductCard";
 import HomeFilters from "./HomeFilters";
+import SearchBar from "./SearchBar";
 import LoadingSpinner from "./LoadingSpinner";
 import { useProductFilters } from "../hooks/useProductFilters";
 
@@ -17,6 +18,7 @@ export default function ProductList({ category }: ProductListCategory) {
     filterByPrice,
     filterByValue,
     filterByTag,
+    filterBySearch,
     resetProducts,
   } = useProductFilters(category);
 
@@ -28,6 +30,8 @@ export default function ProductList({ category }: ProductListCategory) {
       <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
         {category.title}
       </h2>
+
+      <SearchBar onSearch={filterBySearch} />
 
       <HomeFilters
         filterByPrice={filterByPrice}

@@ -1,6 +1,7 @@
 // src/pages/Home.tsx
 import ProductCard from "../components/ProductCard";
 import HomeFilters from "../components/HomeFilters";
+import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useProductFilters } from "../hooks/useProductFilters";
 
@@ -13,6 +14,7 @@ export default function Home() {
     filterByPrice,
     filterByValue,
     filterByTag,
+    filterBySearch,
     resetProducts,
   } = useProductFilters();
 
@@ -29,6 +31,8 @@ export default function Home() {
             fugit natus?
           </p>
         </header>
+
+        <SearchBar onSearch={filterBySearch} />
 
         <HomeFilters
           filterByPrice={filterByPrice}

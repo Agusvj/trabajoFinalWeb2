@@ -18,6 +18,7 @@ export default function HomeFilters({
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(600000);
   const [checkedTags, setCheckedTags] = useState<Set<number>>(new Set());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleReset = () => {
     resetProducts();
@@ -38,16 +39,20 @@ export default function HomeFilters({
   return (
     <div className="mt-8 sm:flex sm:items-center sm:justify-between">
       <div className="block sm:hidden">
-        <button className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600"
+        >
           <span className="text-sm font-medium"> Filters & Sorting </span>
-
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="size-4 rtl:rotate-180"
+            className={`size-4 transition-transform ${
+              mobileMenuOpen ? "rotate-90" : ""
+            }`}
           >
             <path
               strokeLinecap="round"
@@ -56,6 +61,74 @@ export default function HomeFilters({
             />
           </svg>
         </button>
+
+        {mobileMenuOpen && (
+          <div className="mt-4 space-y-4 bg-white p-4 rounded-sm border border-gray-200">
+            <div>
+              <h3 className="text-sm font-medium mb-2">Etiquetas</h3>
+              <ul className="space-y-2">
+                {tags.map((tag) => (
+                  <li key={tag.id}>
+                    <label className="inline-flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="size-5 rounded-sm border-gray-300"
+                        checked={checkedTags.has(tag.id)}
+                        onChange={() => handleTagChange(tag.id)}
+                      />
+                      <span className="text-sm text-gray-700">{tag.title}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-2">Precio</h3>
+              <div className="flex gap-2 mb-2">
+                <input
+                  type="number"
+                  placeholder="Desde"
+                  className="w-full rounded-md border-gray-200 text-sm p-2"
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                />
+                <input
+                  type="number"
+                  placeholder="Hasta"
+                  className="w-full rounded-md border-gray-200 text-sm p-2"
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                />
+              </div>
+              <button
+                className="w-full rounded-sm bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
+                onClick={() => filterByPrice(minPrice, maxPrice)}
+              >
+                Filtrar
+              </button>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-2">Ordenar</h3>
+              <select
+                className="w-full rounded-sm border-gray-300 text-sm p-2"
+                onChange={(e) => filterByValue(e.target.value)}
+              >
+                <option>Sort By</option>
+                <option value="alphabeticalAsc">Titulo, ASC</option>
+                <option value="alphabeticalDesc">Titulo, DESC</option>
+                <option value="menorAmayor">Precio, DESC</option>
+                <option value="mayorAmenor">Precio, ASC</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleReset}
+              className="w-full text-sm text-gray-900 underline"
+            >
+              Reset
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="hidden sm:flex sm:gap-4">
@@ -63,7 +136,6 @@ export default function HomeFilters({
           <details className="group [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600">
               <span className="text-sm font-medium"> x Etiqueta </span>
-
               <span className="transition group-open:-rotate-180">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -97,21 +169,15 @@ export default function HomeFilters({
                 <ul className="space-y-1 border-t border-gray-200 p-4">
                   {tags.map((tag) => (
                     <li key={tag.id}>
-                      <label
-                        htmlFor="FilterByTags"
-                        className="inline-flex items-center gap-2"
-                      >
+                      <label className="inline-flex items-center gap-2">
                         <input
                           type="checkbox"
-                          id="FilterByTags"
                           className="size-5 rounded-sm border-gray-300 shadow-sm"
                           checked={checkedTags.has(tag.id)}
                           onChange={() => handleTagChange(tag.id)}
                         />
-
                         <span className="text-sm font-medium text-gray-700">
-                          {" "}
-                          {tag.title}{" "}
+                          {tag.title}
                         </span>
                       </label>
                     </li>
@@ -126,7 +192,6 @@ export default function HomeFilters({
           <details className="group [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600">
               <span className="text-sm font-medium"> Precio </span>
-
               <span className="transition group-open:-rotate-180">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -149,10 +214,8 @@ export default function HomeFilters({
               <div className="w-96 rounded-sm border border-gray-200 bg-white">
                 <header className="flex items-center justify-between p-4">
                   <span className="text-sm text-gray-700">
-                    {" "}
-                    The highest price is $600{" "}
+                    The highest price is $600
                   </span>
-
                   <button
                     type="button"
                     className="text-sm text-gray-900 underline underline-offset-4"
@@ -169,7 +232,6 @@ export default function HomeFilters({
                       className="flex items-center gap-2"
                     >
                       <span className="text-sm text-gray-600">$</span>
-
                       <input
                         type="number"
                         id="FilterPriceFrom"
@@ -184,15 +246,12 @@ export default function HomeFilters({
                       className="flex items-center gap-2"
                     >
                       <span className="text-sm text-gray-600">$</span>
-
                       <input
                         type="number"
                         id="FilterPriceTo"
                         placeholder="To"
                         className="w-full rounded-md border-gray-200 shadow-xs sm:text-sm"
-                        onChange={(e) => {
-                          setMaxPrice(Number(e.target.value));
-                        }}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
                       />
                     </label>
                   </div>
@@ -213,14 +272,10 @@ export default function HomeFilters({
         <label htmlFor="SortBy" className="sr-only">
           SortBy
         </label>
-
         <select
           id="SortBy"
           className="h-10 rounded-sm border-gray-300 text-sm"
-          onChange={(e) => {
-            const value = e.target.value;
-            filterByValue(value);
-          }}
+          onChange={(e) => filterByValue(e.target.value)}
         >
           <option>Sort By</option>
           <option value="alphabeticalAsc">Titulo, ASC</option>
