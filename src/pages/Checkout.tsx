@@ -1,4 +1,3 @@
-// src/pages/Checkout.tsx
 import { useState } from "react";
 import { useCart } from "../hooks/useCart";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +41,9 @@ export default function Checkout() {
   if (cartItems.length === 0) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
-        <h1 className="text-2xl font-serif font-bold mb-4">Tu carrito está vacío</h1>
+        <h1 className="text-2xl font-serif font-bold mb-4">
+          Tu carrito está vacío
+        </h1>
         <button
           onClick={() => navigate("/")}
           className="bg-wood-600 text-white px-6 py-2 rounded-sm hover:bg-wood-700"
@@ -54,7 +55,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 bg-gray-100">
       {showToast && (
         <div className="fixed bottom-40 right-4 bg-green-500 text-white px-6 py-3 rounded-sm shadow-lg z-50">
           ¡Compra realizada con éxito!
@@ -65,7 +66,9 @@ export default function Checkout() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-serif font-semibold mb-4">Información de envío</h2>
+          <h2 className="text-xl font-serif font-semibold mb-4">
+            Información de envío
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -186,7 +189,7 @@ export default function Checkout() {
               className={`w-full py-3 rounded-sm mt-6 ${
                 isProcessing
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  : "bg-wood-700 hover:bg-wood-600"
               } text-white font-sans`}
             >
               {isProcessing ? "Procesando..." : "Finalizar compra"}
@@ -195,8 +198,10 @@ export default function Checkout() {
         </div>
 
         <div>
-          <h2 className="text-xl font-serif font-semibold mb-4">Resumen del pedido</h2>
-          <div className="bg-gray-50 p-4 rounded-sm">
+          <h2 className="text-xl font-serif font-semibold mb-4">
+            Resumen del pedido
+          </h2>
+          <div className="p-4 rounded-sm">
             <div className="space-y-4">
               {cartItems.map((item) => (
                 <div key={item.product.id} className="flex items-center gap-4">
