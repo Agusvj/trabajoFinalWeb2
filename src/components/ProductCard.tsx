@@ -25,7 +25,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           product.tags?.map((tag) => (
             <span
               key={tag.id}
-              className="bg-[hsl(34,96%,47%)] px-3 py-1.5 text-xs text-white font-medium whitespace-nowrap mr-2 rounded-sm"
+              className="bg-wood-600 px-3 py-1.5 text-xs text-white font-medium whitespace-nowrap mr-2 rounded-sm"
             >
               {" "}
               {tag.title}{" "}
@@ -58,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <form className="mt-4">
           <button
-            className="block w-full bg-[hsl(210,71%,31%)] h-12 p-2 text-base  font-medium transition hover:scale-105 rounded-full text-white"
+            className="block w-full bg-wood-700 h-12 p-2 text-base font-medium transition hover:scale-105 hover:bg-wood-800 rounded-full text-white"
             onClick={(e) => {
               e.preventDefault();
               addToCart(product, 1);

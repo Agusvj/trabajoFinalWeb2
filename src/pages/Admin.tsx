@@ -44,7 +44,7 @@ export default function Admin() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">
+      <h1 className="text-3xl font-serif font-bold text-gray-900 mb-8">
         Panel de Administración
       </h1>
 
@@ -54,7 +54,7 @@ export default function Admin() {
             onClick={() => setActiveTab("products")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "products"
-                ? "border-teal-500 text-teal-600"
+                ? "border-wood-700 text-wood-800"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -64,7 +64,7 @@ export default function Admin() {
             onClick={() => setActiveTab("categories")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "categories"
-                ? "border-teal-500 text-teal-600"
+                ? "border-wood-700 text-wood-800"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -75,7 +75,7 @@ export default function Admin() {
             onClick={() => setActiveTab("tags")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "tags"
-                ? "border-teal-500 text-teal-600"
+                ? "border-wood-700 text-wood-800"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >

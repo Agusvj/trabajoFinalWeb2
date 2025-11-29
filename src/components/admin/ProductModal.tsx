@@ -146,7 +146,7 @@ export default function ProductModal({
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
                 required
               />
             </div>
@@ -161,7 +161,7 @@ export default function ProductModal({
                   setFormData({ ...formData, description: e.target.value })
                 }
                 rows={3}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
                 required
               />
             </div>
@@ -180,7 +180,7 @@ export default function ProductModal({
                     price: parseFloat(e.target.value),
                   })
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
                 required
               />
             </div>
@@ -194,7 +194,7 @@ export default function ProductModal({
                 onChange={(e) =>
                   setFormData({ ...formData, category_id: Number(e.target.value), })
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
                 required
               >
                 <option value="">Seleccionar categoría</option>
@@ -265,7 +265,7 @@ export default function ProductModal({
                   const file = e.target.files?.[0] ||  null;
                   setImageFile(file);
                 }}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
                 
               />
             </div>
@@ -280,7 +280,7 @@ export default function ProductModal({
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700"
+                className="px-4 py-2 text-sm font-medium text-white bg-stone-700 rounded-md hover:bg-stone-800"
               >
                 {mode === "create" ? "Crear" : "Actualizar"}
               </button>

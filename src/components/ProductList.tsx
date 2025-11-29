@@ -27,7 +27,7 @@ export default function ProductList({ category }: ProductListCategory) {
 
   return (
     <div className="bg-gray-100 mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+      <h2 className="text-xl font-serif font-bold text-gray-900 sm:text-3xl">
         {category.title}
       </h2>
 

@@ -22,13 +22,11 @@ export default function Home() {
     <section>
       <div className="bg-gray-100 mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <header>
-          <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+          <h2 className="text-xl font-serif font-bold text-gray-900 sm:text-3xl">
             Nuestros Productos
           </h2>
           <p className="mt-4 max-w-md text-gray-500">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque
-            praesentium cumque iure dicta incidunt est ipsam, officia dolor
-            fugit natus?
+            Descubre nuestra selección de vinos premium, quesos artesanales, fiambres de autor y productos regionales cuidadosamente seleccionados.
           </p>
         </header>
 

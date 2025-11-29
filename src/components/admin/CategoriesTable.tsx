@@ -65,7 +65,7 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
           </h2>
           <button
             onClick={() => setCategoryModal({ isOpen: true, mode: "create" })}
-            className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-teal-700"
+            className="bg-stone-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-800"
           >
             Agregar Categoría
           </button>
@@ -123,7 +123,7 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(category)}
-                        className="text-teal-600 hover:text-teal-900"
+                        className="text-stone-700 hover:text-stone-900"
                       >
                         Editar
                       </button>

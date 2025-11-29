@@ -1,78 +1,65 @@
-
-import marketsur from "../../assets/marketsur.png";
+import logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-[hsl(210,71%,31%)] dark:bg-gray-900">
+    <footer className="bg-wood-900">
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex justify-center">
-             <Link
-              to={`/home/`}
-              
-             >
-              <span className="sr-only">Home</span>
-              <img src={marketsur} alt="logo" className="h-32" />
-            </Link>
+          <Link to={`/home/`}>
+            <span className="sr-only">Home</span>
+            <img src={logo} alt="logo" className="h-32" />
+          </Link>
         </div>
 
         <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-50 dark:text-gray-400">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt
-          consequuntur amet culpa cum itaque neque.
+          Curadería de vinos selectos, fiambres artesanales y productos
+          regionales de la más alta calidad.
         </p>
 
         <ul className="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12">
           <li>
             <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
               href="#"
             >
-              About
+              Nosotros
             </a>
           </li>
 
           <li>
             <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
               href="#"
             >
-              Careers
+              Contacto
             </a>
           </li>
 
           <li>
             <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
               href="#"
             >
-              History
+              Nuestra Historia
             </a>
           </li>
 
           <li>
             <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
               href="#"
             >
-              Services
+              Envíos
             </a>
           </li>
 
           <li>
             <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
               href="#"
             >
-              Projects
-            </a>
-          </li>
-
-          <li>
-            <a
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
-              href="#"
-            >
-              Blog
+              Catering
             </a>
           </li>
         </ul>
@@ -83,7 +70,7 @@ export default function Footer() {
               href="#"
               rel="noreferrer"
               target="_blank"
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
             >
               <span className="sr-only">Facebook</span>
               <svg
@@ -106,7 +93,7 @@ export default function Footer() {
               href="#"
               rel="noreferrer"
               target="_blank"
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
             >
               <span className="sr-only">Instagram</span>
               <svg
@@ -129,7 +116,7 @@ export default function Footer() {
               href="#"
               rel="noreferrer"
               target="_blank"
-              className="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+              className="text-gray-100 transition hover:text-wood-300 dark:text-white dark:hover:text-white/75"
             >
               <span className="sr-only">Twitter</span>
               <svg
@@ -142,7 +129,6 @@ export default function Footer() {
               </svg>
             </a>
           </li>
-
         </ul>
       </div>
     </footer>

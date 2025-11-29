@@ -72,7 +72,7 @@ export default function ProductsTable({
           </h2>
           <button
             onClick={() => setProductModal({ isOpen: true, mode: "create" })}
-            className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-teal-700"
+            className="bg-stone-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-800"
           >
             Agregar Producto
           </button>
@@ -139,7 +139,7 @@ export default function ProductsTable({
                       {product.tags.slice(0, 2).map((tag) => (
                         <span
                           key={tag.id}
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800"
+                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-wood-200 text-wood-800"
                         >
                           {tag.title}
                         </span>
@@ -155,7 +155,7 @@ export default function ProductsTable({
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleEdit(product)}
-                        className="text-teal-600 hover:text-teal-900"
+                        className="text-stone-700 hover:text-stone-900"
                       >
                         Editar
                       </button>

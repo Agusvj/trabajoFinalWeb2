@@ -100,7 +100,7 @@ export default function HomeFilters({
                 />
               </div>
               <button
-                className="w-full rounded-sm bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
+                className="w-full rounded-sm bg-wood-600 px-4 py-2 text-sm text-white hover:bg-wood-700"
                 onClick={() => filterByPrice(minPrice, maxPrice)}
               >
                 Filtrar
@@ -256,7 +256,7 @@ export default function HomeFilters({
                     </label>
                   </div>
                   <button
-                    className="inline-block rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:ring-3 focus:outline-hidden mt-5"
+                    className="inline-block rounded-sm border border-wood-600 bg-wood-600 px-12 py-3 text-sm font-medium text-white hover:bg-wood-700 focus:ring-3 focus:outline-hidden mt-5"
                     onClick={() => filterByPrice(minPrice, maxPrice)}
                   >
                     Filtrar

@@ -42,10 +42,10 @@ export default function Checkout() {
   if (cartItems.length === 0) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">Tu carrito está vacío</h1>
+        <h1 className="text-2xl font-serif font-bold mb-4">Tu carrito está vacío</h1>
         <button
           onClick={() => navigate("/")}
-          className="bg-teal-500 text-white px-6 py-2 rounded-sm hover:bg-teal-600"
+          className="bg-wood-600 text-white px-6 py-2 rounded-sm hover:bg-wood-700"
         >
           Continuar comprando
         </button>
@@ -61,11 +61,11 @@ export default function Checkout() {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+      <h1 className="text-3xl font-serif font-bold mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4">Información de envío</h2>
+          <h2 className="text-xl font-serif font-semibold mb-4">Información de envío</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -134,7 +134,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            <h3 className="text-lg font-semibold mt-6 mb-4">
+            <h3 className="text-lg font-serif font-semibold mt-6 mb-4">
               Información de pago
             </h3>
 
@@ -187,7 +187,7 @@ export default function Checkout() {
                 isProcessing
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
-              } text-white`}
+              } text-white font-sans`}
             >
               {isProcessing ? "Procesando..." : "Finalizar compra"}
             </button>
@@ -195,7 +195,7 @@ export default function Checkout() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Resumen del pedido</h2>
+          <h2 className="text-xl font-serif font-semibold mb-4">Resumen del pedido</h2>
           <div className="bg-gray-50 p-4 rounded-sm">
             <div className="space-y-4">
               {cartItems.map((item) => (

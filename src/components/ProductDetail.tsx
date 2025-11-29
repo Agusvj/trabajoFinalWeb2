@@ -72,11 +72,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             <div className="flex flex-col h-full justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                <h1 className="text-3xl font-serif font-bold text-gray-900 mb-4">
                   {product.title}
                 </h1>
 
-                <p className="text-4xl font-bold text-blue-800 mb-6">
+                <p className="text-4xl font-bold text-wood-800 mb-6">
                   ${product.price * 1000}
                 </p>
 
@@ -89,7 +89,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       {product.tags.map((tag) => (
                         <span
                           key={tag.id}
-                          className="bg-yellow-400 px-3 py-1.5 text-xs font-medium rounded-sm"
+                          className="bg-wood-600 px-3 py-1.5 text-xs font-medium text-white rounded-sm"
                         >
                           {tag.title}
                         </span>
@@ -109,7 +109,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               </div>
 
               <button
-                className="w-full bg-blue-800 text-white px-8 py-4 rounded-md text-lg font-medium hover:bg-blue-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-auto"
+                className="w-full bg-wood-700 text-white px-8 py-4 rounded-md text-lg font-medium hover:bg-wood-800 transition-colors focus:outline-none focus:ring-2 focus:ring-wood-500 focus:ring-offset-2 mt-auto"
                 onClick={(e) => {
                   e.preventDefault();
                   addToCart(product, 1);
