@@ -57,5 +57,31 @@ export const useProducts = () => {
       throw error;
     }
   };
-  return { createProduct, updateProduct, deleteProduct };
+
+  const uploadProductImage = async(productId : number, imageFile: File) => {
+    try{
+      const formData = new FormData();
+      formData.append('files', imageFile);
+
+      const res = await fetch(`http://161.35.104.211:8000/products/${productId}/pictures/`,{
+        method: 'POST',
+        headers:{
+           Authorization: "Bearer agusvj",
+        },
+        body: formData,
+      });
+
+      if(!res.ok){
+        throw new Error ("Error al subir imagen");
+
+      }
+      const json = await res.json();
+      return json;
+
+    }catch(error){
+      console.error("API error:", error);
+      throw error;
+    }
+  };
+  return { createProduct, updateProduct, deleteProduct, uploadProductImage };
 };

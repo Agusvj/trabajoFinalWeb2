@@ -1,7 +1,8 @@
 // src/components/admin/ProductModal.tsx
-import { useState } from "react";
-import type { Product, Category } from "../../types/entities";
+import { useEffect, useState } from "react";
+import type { Product, Category, Tag } from "../../types/entities";
 import {  useProducts} from "../../data/crudProduct"; 
+import {useTags} from "../../data/crudTags";
 
 type ProductModalProps = {
   isOpen: boolean;
@@ -10,6 +11,13 @@ type ProductModalProps = {
   categories: Category[];
   mode: "create" | "edit";
   onSave:(newProduct: Product) => void;
+};
+
+type FormDataType = {
+  title: string;
+  description: string;
+  price: number;
+  category_id: number | ""; 
 };
 
 export default function ProductModal({
@@ -21,16 +29,51 @@ export default function ProductModal({
   onSave,
 }: ProductModalProps) {
 
-  const{ createProduct, updateProduct } = useProducts();
+  const{ createProduct, updateProduct, uploadProductImage } = useProducts();
+  const {getTags} = useTags();
 
-  const [formData, setFormData] = useState({
-    title: product?.title || "",
-    description: product?.description || "",
-    price: product?.price || 0,
-    category_id: product?.category_id || "",
-    pictures: "",
+  const [formData, setFormData] = useState<FormDataType>({
+    title: product?.title ?? "",
+    description: product?.description ?? "",
+    price: product?.price ?? 0,
+    category_id: product?.category_id ?? "",
   });
+  const [imageFile, setImageFile] = useState <File | null> (null);
 
+  const[selectedTags, setSelectedTags] = useState<number[]>([]);
+
+  const[availableTags, setAvailableTags] = useState<Tag[]>([]);
+
+  const [showTagDropdown, setShowTagDropdown] = useState(false);
+
+    const handleTagToggle = (tagId: number) => {
+      setSelectedTags((prev) =>
+        prev.includes(tagId)
+          ? prev.filter((id) => id !== tagId)
+          : [...prev, tagId]
+      );
+    };
+
+    useEffect(() =>{
+      setFormData({
+        title: product?.title ??"",
+        description:product?.description ??"",
+        price:product?.price?? 0,
+        category_id: product?.category_id ??"",
+
+      });
+      setSelectedTags(product?.tags?.map((t) => t.id) ?? []);
+      setImageFile(null);
+    }, [product, isOpen]);
+
+    useEffect(() =>{
+      getTags()
+      .then(setAvailableTags)
+      .catch((err) => console.error("Error cargando tags", err));
+
+    }, []);
+  
+  
   if (!isOpen) return null;
 
   const handleSubmit =  async (e: React.FormEvent) => {
@@ -39,19 +82,30 @@ export default function ProductModal({
     const dataToSend = {
       ...formData,
       category_id : Number(formData.category_id),
-      pictures:[formData.pictures],
-
-    };
+      tag_ids: selectedTags,
+       };
     console.log("Form data:", formData);
-    if(mode === "create"){
-      const newProduct = await createProduct(dataToSend);
-      onSave(newProduct);
-    } else{
-      const updatedProduct = await updateProduct(product!.id, dataToSend);
-      onSave(updatedProduct);
-    }
-     onClose();
-  };
+     try{
+      let savedProduct: Product;
+
+      if (mode === "create"){
+        savedProduct = await createProduct(dataToSend);
+      }
+      else{
+        savedProduct = await updateProduct(product!.id, dataToSend);
+      }
+
+      if (imageFile){
+        await uploadProductImage(savedProduct.id, imageFile);
+      }
+      onSave(savedProduct);
+      onClose();
+     }catch (error){
+      console.error("Error guardando producto:", error);
+     }
+    };
+   
+  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -138,7 +192,7 @@ export default function ProductModal({
               <select
                 value={formData.category_id}
                 onChange={(e) =>
-                  setFormData({ ...formData, category_id: e.target.value })
+                  setFormData({ ...formData, category_id: Number(e.target.value), })
                 }
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
@@ -152,18 +206,67 @@ export default function ProductModal({
               </select>
             </div>
 
+            <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tags
+            </label>
+
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowTagDropdown(prev => !prev)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white flex justify-between items-center"
+              >
+                <span>
+                  {selectedTags.length > 0
+                    ? `${selectedTags.length} seleccionados`
+                    : "Seleccionar tags"}
+                </span>
+                  <svg
+                    className="w-5 h-5 text-gray-600 pointer-events-none"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+              </button>
+
+              {showTagDropdown && (
+                <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto z-20">
+                  {availableTags.map(tag => (
+                    <label
+                      key={tag.id}
+                      className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(tag.id)}
+                        onChange={() => handleTagToggle(tag.id)}
+                      />
+                      {tag.title}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Imagen URL
+                Imagen del producto 
               </label>
               <input
-                type="text"
-                value={formData.pictures}
-                onChange={(e) =>
-                  setFormData({ ...formData, pictures: e.target.value })
-                }
+                type="file"
+                accept = "image/*"
+                onChange={(e) =>{
+                  const file = e.target.files?.[0] ||  null;
+                  setImageFile(file);
+                }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="URL de la imagen"
+                
               />
             </div>
 
