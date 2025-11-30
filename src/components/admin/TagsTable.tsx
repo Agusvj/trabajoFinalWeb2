@@ -1,30 +1,41 @@
-// src/components/admin/CategoriesTable.tsx
-import { useState } from "react";
-import type { Tag} from "../../types/entities";
+// src/components/admin/TagsTable.tsx
+import { useState, useMemo } from "react";
+import type { Tag } from "../../types/entities";
 import TagsModal from "./TagsModal";
 import DeleteModal from "./DeleteModal";
+import Pagination from "../Pagination";
 import { useTags } from "../../data/crudTags";
+import { usePagination } from "../../hooks/usePagination";
+
 type TagsModalState =
   | { isOpen: boolean; mode: "create"; tags?: never }
   | { isOpen: boolean; mode: "edit"; tags: Tag };
+
 type TagsTableProps = {
   tags: Tag[];
 };
 
 export default function TagsTable({ tags }: TagsTableProps) {
-  const [tagsState, setTagsState] = useState<Tag[]>(tags)
+  const [tagsState, setTagsState] = useState<Tag[]>(tags);
   const [tagsModal, setTagsModal] = useState<TagsModalState>({
     isOpen: false,
     mode: "create",
   });
- 
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
-   tags?: Tag;
+    tags?: Tag;
   }>({ isOpen: false });
-  //esta funcion tengo que definirla en crudtags
-  const {deleteTag} = useTags();
+
+  const { deleteTag } = useTags();
+  const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
+
+  const paginatedTags = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return tagsState.slice(start, start + itemsPerPage);
+  }, [tagsState, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(tagsState.length / itemsPerPage);
 
   const handleEdit = (tags: Tag) => {
     setTagsModal({ isOpen: true, mode: "edit", tags: tags });
@@ -35,25 +46,23 @@ export default function TagsTable({ tags }: TagsTableProps) {
   };
 
   const confirmDelete = async () => {
-    try{
-      if(!deleteModal.tags) return;
+    try {
+      if (!deleteModal.tags) return;
       await deleteTag(deleteModal.tags.id);
-      setTagsState (prev =>
-        prev.filter(p => p.id !==deleteModal.tags!.id)
-      );
-    
-    // TODO: API call logic
-    console.log("Deleting tag:", deleteModal.tags);
-    setDeleteModal({ isOpen: false });
-     }catch(error){
+      setTagsState((prev) => prev.filter((p) => p.id !== deleteModal.tags!.id));
+
+      console.log("Deleting tag:", deleteModal.tags);
+      setDeleteModal({ isOpen: false });
+    } catch (error) {
       console.error("etiqueta eliminada:", error);
-     };
-    };
+    }
+  };
+
   const handleTagSaved = (newTag: Tag) => {
-    setTagsState((prevTags) =>{
-      const exists = prevTags.some(p =>p.id === newTag.id);
-      if(exists){
-        return prevTags.map(p => p.id === newTag.id ? newTag : p );
+    setTagsState((prevTags) => {
+      const exists = prevTags.some((p) => p.id === newTag.id);
+      if (exists) {
+        return prevTags.map((p) => (p.id === newTag.id ? newTag : p));
       }
       return [...prevTags, newTag];
     });
@@ -70,7 +79,7 @@ export default function TagsTable({ tags }: TagsTableProps) {
             onClick={() => setTagsModal({ isOpen: true, mode: "create" })}
             className="bg-stone-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-800"
           >
-            Agregar Etiqueta 
+            Agregar Etiqueta
           </button>
         </div>
 
@@ -81,25 +90,25 @@ export default function TagsTable({ tags }: TagsTableProps) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ID
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {tagsState.map((tags) => (
+              {paginatedTags.map((tags) => (
                 <tr key={tags.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {tags.id}
                   </td>
-                 
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       {tags.title}
                     </div>
                   </td>
-                 
+
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
                       <button
@@ -127,25 +136,35 @@ export default function TagsTable({ tags }: TagsTableProps) {
             <p className="text-gray-500">No hay Etiquetas disponibles</p>
           </div>
         )}
+
+        {tagsState.length > itemsPerPage && (
+          <div className="px-6 py-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onNext={nextPage}
+              onPrev={prevPage}
+            />
+          </div>
+        )}
       </div>
 
-         {tagsModal.mode === "create" ? (
+      {tagsModal.mode === "create" ? (
         <TagsModal
-            isOpen={tagsModal.isOpen}
-            onClose={() => setTagsModal({ isOpen: false, mode: "create" })}
-            mode="create"
-            onSave={handleTagSaved}
+          isOpen={tagsModal.isOpen}
+          onClose={() => setTagsModal({ isOpen: false, mode: "create" })}
+          mode="create"
+          onSave={handleTagSaved}
         />
-        ) : (
+      ) : (
         <TagsModal
-            isOpen={tagsModal.isOpen}
-            onClose={() => setTagsModal({ isOpen: false, mode: "create" })}
-            mode="edit"
-            tags={tagsModal.tags}  
-            onSave={handleTagSaved}
+          isOpen={tagsModal.isOpen}
+          onClose={() => setTagsModal({ isOpen: false, mode: "create" })}
+          mode="edit"
+          tags={tagsModal.tags}
+          onSave={handleTagSaved}
         />
-        )}
-
+      )}
 
       <DeleteModal
         isOpen={deleteModal.isOpen}

@@ -1,16 +1,18 @@
 // src/components/admin/CategoriesTable.tsx
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Category } from "../../types/entities";
 import CategoryModal from "./CategoryModal";
 import DeleteModal from "./DeleteModal";
+import Pagination from "../Pagination";
 import { useCategories } from "../../data/crudCategories";
+import { usePagination } from "../../hooks/usePagination";
 
 type CategoriesTableProps = {
   categories: Category[];
 };
 
 export default function CategoriesTable({ categories }: CategoriesTableProps) {
-  const [categoryState, setCategoryState] = useState<Category[]>(categories)
+  const [categoryState, setCategoryState] = useState<Category[]>(categories);
   const [categoryModal, setCategoryModal] = useState<{
     isOpen: boolean;
     mode: "create" | "edit";
@@ -21,7 +23,16 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
     isOpen: boolean;
     category?: Category;
   }>({ isOpen: false });
-  const {deleteCategory} = useCategories();
+
+  const { deleteCategory } = useCategories();
+  const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
+
+  const paginatedCategories = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return categoryState.slice(start, start + itemsPerPage);
+  }, [categoryState, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(categoryState.length / itemsPerPage);
 
   const handleEdit = (category: Category) => {
     setCategoryModal({ isOpen: true, mode: "edit", category });
@@ -32,25 +43,27 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
   };
 
   const confirmDelete = async () => {
-    try{
-      if(!deleteModal.category) return;
+    try {
+      if (!deleteModal.category) return;
       await deleteCategory(deleteModal.category.id);
-      setCategoryState (prev =>
-        prev.filter(p => p.id !==deleteModal.category!.id)
+      setCategoryState((prev) =>
+        prev.filter((p) => p.id !== deleteModal.category!.id)
       );
-    
-    // TODO: API call logic
-    console.log("Deleting category:", deleteModal.category);
-    setDeleteModal({ isOpen: false });
-     }catch(error){
+
+      console.log("Deleting category:", deleteModal.category);
+      setDeleteModal({ isOpen: false });
+    } catch (error) {
       console.error("Error deleting product:", error);
-     };
-    };
+    }
+  };
+
   const handleCategorySaved = (newCategory: Category) => {
-    setCategoryState((prevCategories) =>{
-      const exists = prevCategories.some(p =>p.id === newCategory.id);
-      if(exists){
-        return prevCategories.map(p => p.id === newCategory.id ? newCategory : p );
+    setCategoryState((prevCategories) => {
+      const exists = prevCategories.some((p) => p.id === newCategory.id);
+      if (exists) {
+        return prevCategories.map((p) =>
+          p.id === newCategory.id ? newCategory : p
+        );
       }
       return [...prevCategories, newCategory];
     });
@@ -93,7 +106,7 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {categoryState.map((category) => (
+              {paginatedCategories.map((category) => (
                 <tr key={category.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {category.id}
@@ -144,6 +157,17 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
         {categoryState.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">No hay categorías disponibles</p>
+          </div>
+        )}
+
+        {categoryState.length > itemsPerPage && (
+          <div className="px-6 py-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onNext={nextPage}
+              onPrev={prevPage}
+            />
           </div>
         )}
       </div>

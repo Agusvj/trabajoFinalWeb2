@@ -201,8 +201,8 @@ export default function Checkout() {
           <h2 className="text-xl font-serif font-semibold mb-4">
             Resumen del pedido
           </h2>
-          <div className="p-4 rounded-sm">
-            <div className="space-y-4">
+          <div className="p-4 rounded-sm bg-white">
+            <div className="space-y-4 max-h-96 overflow-y-auto">
               {cartItems.map((item) => (
                 <div key={item.product.id} className="flex items-center gap-4">
                   <img

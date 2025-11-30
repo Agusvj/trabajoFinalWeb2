@@ -10,6 +10,7 @@ export default function Cart() {
     removeFromCart,
     updateQuantity,
     clearCart,
+    getCartTotal,
   } = useCart();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -37,10 +38,10 @@ export default function Cart() {
       />
 
       <div
-        className={`fixed w-screen max-w-sm border border-gray-600 bg-gray-100 px-4 py-8 sm:px-6 lg:px-8 right-10 top-[130px] transition-all duration-300 transform ${
+        className={`fixed w-[95%] lg:w-screen lg:max-w-sm border border-gray-600 bg-gray-300 px-4 py-8 sm:px-6 lg:px-8 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-10 top-[130px] transition-all duration-300 transform ${
           isVisible
-            ? "opacity-100 translate-x-0 scale-100"
-            : "opacity-0 translate-x-4 scale-95"
+            ? "opacity-100 translate-y-0 scale-100"
+            : "opacity-0 translate-y-4 scale-95"
         }`}
         aria-modal="true"
         role="dialog"
@@ -73,13 +74,17 @@ export default function Cart() {
               cartItems.map((item) => (
                 <li className="flex items-center gap-4" key={item.product.id}>
                   <img
-                    src={`http://161.35.104.211:8000${item.product.pictures}`}
+                    src={
+                      item.product.pictures?.length > 0
+                        ? `http://161.35.104.211:8000${item.product.pictures[0]}`
+                        : "https://placehold.co/64x64?text=Sin+Imagen"
+                    }
                     alt={item.product.title}
                     className="size-16 rounded-sm object-cover"
                   />
 
                   <div>
-                    <h3 className="text-sm text-gray-900">
+                    <h3 className="text-sm text-gray-900 truncate max-w-[80px]">
                       {item.product.title}
                     </h3>
 
@@ -168,6 +173,14 @@ export default function Cart() {
           </ul>
 
           <div className="space-y-4 text-center">
+            {cartItems.length >= 1 && (
+              <div className="text-center py-2 border-t border-gray-300">
+                <p className="text-lg font-bold text-gray-900 whitespace-nowrap">
+                  Total: ${getCartTotal() * 1000}
+                </p>
+              </div>
+            )}
+
             {cartItems.length >= 1 ? (
               <button
                 onClick={() => clearCart()}

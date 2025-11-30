@@ -5,6 +5,7 @@ import ProductDetailWrapper from "../pages/ProductDetailWrapper";
 import ProductCategories from "../pages/ProductCategories";
 import Checkout from "../pages/Checkout";
 import Admin from "../pages/Admin";
+import NotFound from "../pages/NotFound";
 
 export default function AppRouter() {
   return (
@@ -16,6 +17,7 @@ export default function AppRouter() {
         <Route path="/categorias/:categoryId" element={<ProductCategories />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

@@ -10,6 +10,10 @@ export const useProductFilters = (categoryFilter?: Category) => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [priceRange, setPriceRange] = useState<{
+    min: number;
+    max: number;
+  } | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -38,26 +42,42 @@ export const useProductFilters = (categoryFilter?: Category) => {
     fetchData();
   }, [categoryFilter?.id]);
 
-  const filterBySearch = (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setProducts(productsBackup);
-      return;
+  useEffect(() => {
+    let filtered = [...productsBackup];
+
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(
+        (product) =>
+          product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
 
-    const filtered = productsBackup.filter(
-      (product) =>
-        product.title?.toLowerCase().includes(query.toLowerCase()) ||
-        product.description?.toLowerCase().includes(query.toLowerCase())
-    );
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter((product) =>
+        selectedTags.some((selectedTagId) =>
+          product.tags.some((tag) => tag.id === selectedTagId)
+        )
+      );
+    }
+
+    if (priceRange) {
+      filtered = filtered.filter(
+        (product) =>
+          product.price! * 1000 >= priceRange.min &&
+          product.price! * 1000 <= priceRange.max
+      );
+    }
+
     setProducts(filtered);
+  }, [productsBackup, searchQuery, selectedTags, priceRange]);
+
+  const filterBySearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const filterByPrice = (min: number, max: number) => {
-    const filteredProducts = productsBackup.filter(
-      (product) => product.price! * 1000 >= min && product.price! * 1000 <= max
-    );
-    setProducts(filteredProducts);
+    setPriceRange({ min, max });
   };
 
   const filterByValue = (value: string) => {
@@ -84,30 +104,23 @@ export const useProductFilters = (categoryFilter?: Category) => {
       : [...selectedTags, tagId];
 
     setSelectedTags(newSelectedTags);
-
-    if (newSelectedTags.length === 0) {
-      setProducts(productsBackup);
-    } else {
-      const filteredProducts = productsBackup.filter((product) =>
-        newSelectedTags.some((selectedTagId) =>
-          product.tags.some((tag) => tag.id === selectedTagId)
-        )
-      );
-      setProducts(filteredProducts);
-    }
   };
 
   const resetProducts = () => {
     setProducts(productsBackup);
     setSelectedTags([]);
     setSearchQuery("");
+    setPriceRange(null);
   };
+
+  const maxPrice = Math.max(...productsBackup.map((p) => p.price * 1000), 0);
 
   return {
     products,
     loading,
     error,
     tags,
+    maxPrice,
     filterByPrice,
     filterByValue,
     filterByTag,

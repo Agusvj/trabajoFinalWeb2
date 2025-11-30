@@ -11,18 +11,15 @@ export async function getProducts(): Promise<Product[]> {
       }
     );
     const data = await res.json();
-    console.log(data);
 
     return data;
   } catch (error) {
     console.log("Error al buscar los productos");
     throw error;
   }
-  
 }
 export async function getProductById(id: number): Promise<Product | null> {
   const products = await getProducts();
   const product = products.find((p) => p.id === id);
   return product || null;
 }
-

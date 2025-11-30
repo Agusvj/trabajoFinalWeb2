@@ -6,6 +6,7 @@ type HomeFiltersProps = {
   filterByValue: (value: string) => void;
   tags: Array<{ title: string; id: number }>;
   filterByTag: (tagId: number) => void;
+  maxPrice: number;
 };
 
 export default function HomeFilters({
@@ -14,9 +15,10 @@ export default function HomeFilters({
   filterByValue,
   tags,
   filterByTag,
+  maxPrice,
 }: HomeFiltersProps) {
   const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(600000);
+  const [maxPriceInput, setMaxPriceInput] = useState<number>(maxPrice);
   const [checkedTags, setCheckedTags] = useState<Set<number>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -96,12 +98,12 @@ export default function HomeFilters({
                   type="number"
                   placeholder="Hasta"
                   className="w-full rounded-md border-gray-200 text-sm p-2"
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  onChange={(e) => setMaxPriceInput(Number(e.target.value))}
                 />
               </div>
               <button
                 className="w-full rounded-sm bg-wood-600 px-4 py-2 text-sm text-white hover:bg-wood-700"
-                onClick={() => filterByPrice(minPrice, maxPrice)}
+                onClick={() => filterByPrice(minPrice, maxPriceInput)}
               >
                 Filtrar
               </button>
@@ -214,7 +216,7 @@ export default function HomeFilters({
               <div className="w-96 rounded-sm border border-gray-200 bg-white">
                 <header className="flex items-center justify-between p-4">
                   <span className="text-sm text-gray-700">
-                    The highest price is $600
+                    El precio más alto es ${maxPrice}
                   </span>
                   <button
                     type="button"
@@ -251,13 +253,13 @@ export default function HomeFilters({
                         id="FilterPriceTo"
                         placeholder="To"
                         className="w-full rounded-md border-gray-200 shadow-xs sm:text-sm"
-                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        onChange={(e) => setMaxPriceInput(Number(e.target.value))}
                       />
                     </label>
                   </div>
                   <button
                     className="inline-block rounded-sm border border-wood-600 bg-wood-600 px-12 py-3 text-sm font-medium text-white hover:bg-wood-700 focus:ring-3 focus:outline-hidden mt-5"
-                    onClick={() => filterByPrice(minPrice, maxPrice)}
+                    onClick={() => filterByPrice(minPrice, maxPriceInput)}
                   >
                     Filtrar
                   </button>

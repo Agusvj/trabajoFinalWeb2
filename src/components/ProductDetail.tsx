@@ -11,6 +11,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const { addToCart } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const hasImages = product.pictures?.length > 0;
+
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -46,13 +48,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <div className="flex flex-col h-full">
               <div className="relative w-full h-[500px] overflow-hidden rounded-lg bg-gray-100">
                 <img
-                  src={`http://161.35.104.211:8000${product.pictures[currentImageIndex]}`}
+                  src={
+                    hasImages
+                      ? `http://161.35.104.211:8000${product.pictures[currentImageIndex]}`
+                      : "https://placehold.co/500x500?text=Sin+Imagen"
+                  }
                   alt={product.title}
                   className="h-full w-full object-cover object-center"
                 />
               </div>
 
-              {product.pictures.length > 1 && (
+              {hasImages && product.pictures.length > 1 && (
                 <div className="flex justify-center gap-2 mt-4">
                   {product.pictures.map((_, index) => (
                     <button

@@ -1,9 +1,11 @@
 // src/components/admin/ProductsTable.tsx
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Product, Category } from "../../types/entities";
 import ProductModal from "./ProductModal";
 import DeleteModal from "./DeleteModal";
+import Pagination from "../Pagination";
 import { useProducts } from "../../data/crudProduct";
+import { usePagination } from "../../hooks/usePagination";
 
 type ProductsTableProps = {
   products: Product[];
@@ -14,7 +16,7 @@ export default function ProductsTable({
   products,
   categories,
 }: ProductsTableProps) {
-  const[productsState, setProductsState] = useState<Product[]>(products);
+  const [productsState, setProductsState] = useState<Product[]>(products);
   const [productModal, setProductModal] = useState<{
     isOpen: boolean;
     mode: "create" | "edit";
@@ -26,7 +28,15 @@ export default function ProductsTable({
     product?: Product;
   }>({ isOpen: false });
 
-  const {deleteProduct} = useProducts();
+  const { deleteProduct } = useProducts();
+  const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return productsState.slice(start, start + itemsPerPage);
+  }, [productsState, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(productsState.length / itemsPerPage);
 
   const handleEdit = (product: Product) => {
     setProductModal({ isOpen: true, mode: "edit", product });
@@ -37,27 +47,28 @@ export default function ProductsTable({
   };
 
   const confirmDelete = async () => {
-    try{
-      if(!deleteModal.product) return;
+    try {
+      if (!deleteModal.product) return;
       await deleteProduct(deleteModal.product.id);
-      setProductsState(prev => 
-        prev.filter(p => p.id !== deleteModal.product!.id)
+      setProductsState((prev) =>
+        prev.filter((p) => p.id !== deleteModal.product!.id)
       );
 
       console.log("Deleting product:", deleteModal.product);
 
-     setDeleteModal({ isOpen: false });
-      }catch(error){
+      setDeleteModal({ isOpen: false });
+    } catch (error) {
       console.error("Error deleting product:", error);
-     };
+    }
   };
 
-
-  const handleProductSaved = (newProduct: Product) =>{
-    setProductsState((prevProducts) =>{
-      const exists = prevProducts.some (p =>p.id === newProduct.id);
-      if(exists) {
-        return prevProducts.map(p => p.id === newProduct.id ? newProduct : p);
+  const handleProductSaved = (newProduct: Product) => {
+    setProductsState((prevProducts) => {
+      const exists = prevProducts.some((p) => p.id === newProduct.id);
+      if (exists) {
+        return prevProducts.map((p) =>
+          p.id === newProduct.id ? newProduct : p
+        );
       }
       return [...prevProducts, newProduct];
     });
@@ -103,7 +114,7 @@ export default function ProductsTable({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {productsState.map((product) => (
+              {paginatedProducts.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
@@ -178,6 +189,17 @@ export default function ProductsTable({
             <p className="text-gray-500">No hay productos disponibles</p>
           </div>
         )}
+
+        {productsState.length > itemsPerPage && (
+          <div className="px-6 py-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onNext={nextPage}
+              onPrev={prevPage}
+            />
+          </div>
+        )}
       </div>
 
       <ProductModal
@@ -186,7 +208,7 @@ export default function ProductsTable({
         product={productModal.product}
         categories={categories}
         mode={productModal.mode}
-        onSave = {handleProductSaved}
+        onSave={handleProductSaved}
       />
 
       <DeleteModal

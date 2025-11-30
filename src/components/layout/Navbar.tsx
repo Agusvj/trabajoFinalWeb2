@@ -40,28 +40,64 @@ export default function Navbar() {
 
             <div className="hidden md:block">
               <nav aria-label="Global">
-                <ul className="flex items-center gap-6 text-sm">
-                  {categories.length > 0 ? (
-                    categories.map((category) => (
-                      <li key={category.id}>
-                        <Link
-                          to={`/categorias/${category.id}`}
-                          className="font-serif font-semibold text-white inline-block transition  transform hover:scale-110 hover:text-wood-200 dark:text-white dark:hover:text-white/75"
-                        >
-                          {category.title}
-                        </Link>
+                {categories.length > 3 ? (
+                  <div className="relative group">
+                    <button className="font-serif font-semibold text-white inline-flex items-center gap-2 transition transform hover:scale-110 hover:text-wood-200">
+                      Categorías
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 transition group-hover:rotate-180"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <ul className="py-2">
+                        {categories.map((category) => (
+                          <li key={category.id}>
+                            <Link
+                              to={`/categorias/${category.id}`}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-wood-100 hover:text-wood-800"
+                            >
+                              {category.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <ul className="flex items-center gap-6 text-sm">
+                    {categories.length > 0 ? (
+                      categories.map((category) => (
+                        <li key={category.id}>
+                          <Link
+                            to={`/categorias/${category.id}`}
+                            className="font-serif font-semibold text-white inline-block transition transform hover:scale-110 hover:text-wood-200 dark:text-white dark:hover:text-white/75"
+                          >
+                            {category.title}
+                          </Link>
+                        </li>
+                      ))
+                    ) : error ? (
+                      <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75">
+                        {error}
                       </li>
-                    ))
-                  ) : error ? (
-                    <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75">
-                      {error}
-                    </li>
-                  ) : (
-                    <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75 font-bold">
-                      Cargando...
-                    </li>
-                  )}
-                </ul>
+                    ) : (
+                      <li className="text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75 font-bold">
+                        Cargando...
+                      </li>
+                    )}
+                  </ul>
+                )}
               </nav>
             </div>
 
@@ -98,7 +134,7 @@ export default function Navbar() {
 
               <div className="block md:hidden">
                 <button
-                  className="rounded-sm bg-wood-100 p-2 text-wood-800 transition hover:bg-wood-200 dark:bg-gray-800 dark:text-white dark:hover:text-white/75"
+                  className="rounded-sm bg-wood-400 p-2 text-wood-800 transition hover:bg-wood-300"
                   onClick={() => setOpen(!open)}
                 >
                   <svg
@@ -122,7 +158,7 @@ export default function Navbar() {
                 /* Mobile menu */
 
                 open && (
-                  <div className="absolute top-20 left-0 w-full bg-wood-50 dark:bg-gray-900 md:hidden shadow-lg">
+                  <div className="absolute top-20 left-0 w-full bg-wood-200 dark:bg-wood-600 md:hidden shadow-lg">
                     <nav aria-label="Global">
                       <ul className="flex flex-col items-center gap-3 text-sm">
                         {categories.length > 0 ? (

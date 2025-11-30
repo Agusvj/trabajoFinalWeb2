@@ -3,7 +3,10 @@ import ProductCard from "../components/ProductCard";
 import HomeFilters from "../components/HomeFilters";
 import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Pagination from "../components/Pagination";
 import { useProductFilters } from "../hooks/useProductFilters";
+import { usePagination } from "../hooks/usePagination";
+import { useMemo } from "react";
 
 export default function Home() {
   const {
@@ -11,12 +14,28 @@ export default function Home() {
     loading,
     error,
     tags,
+    maxPrice,
     filterByPrice,
     filterByValue,
     filterByTag,
     filterBySearch,
     resetProducts,
   } = useProductFilters();
+
+  const { currentPage, itemsPerPage, nextPage, prevPage, resetPage } =
+    usePagination(10);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return products.slice(start, start + itemsPerPage);
+  }, [products, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  const handleReset = () => {
+    resetProducts();
+    resetPage();
+  };
 
   return (
     <section>
@@ -26,7 +45,9 @@ export default function Home() {
             Nuestros Productos
           </h2>
           <p className="mt-4 max-w-md text-gray-500">
-            Descubre nuestra selección de vinos premium, quesos artesanales, fiambres de autor y productos regionales cuidadosamente seleccionados.
+            Descubre nuestra selección de vinos premium, quesos artesanales,
+            fiambres de autor y productos regionales cuidadosamente
+            seleccionados.
           </p>
         </header>
 
@@ -34,10 +55,11 @@ export default function Home() {
 
         <HomeFilters
           filterByPrice={filterByPrice}
-          resetProducts={resetProducts}
+          resetProducts={handleReset}
           filterByValue={filterByValue}
           tags={tags}
           filterByTag={filterByTag}
+          maxPrice={maxPrice}
         />
 
         {loading ? (
@@ -45,13 +67,23 @@ export default function Home() {
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
         ) : (
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
-            {products.map((product) => (
-              <li key={product.id}>
-                <ProductCard product={product} />
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
+              {paginatedProducts.map((product) => (
+                <li key={product.id}>
+                  <ProductCard product={product} />
+                </li>
+              ))}
+            </ul>
+            {products.length > itemsPerPage && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onNext={nextPage}
+                onPrev={prevPage}
+              />
+            )}
+          </>
         )}
       </div>
     </section>
