@@ -1,5 +1,5 @@
 // src/components/admin/CategoryModal.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Tag } from "../../types/entities";
 import {useTags} from "../../data/crudTags";
 
@@ -28,8 +28,12 @@ export default function TagsModal({
 }: TagsModalProps) {
   const{createTag, updateTag } = useTags();
   const [formData, setFormData] = useState({
-    title: tags?.title || "",
+    title: tags?.title ?? "",
   });
+ useEffect(() =>{
+       setFormData({
+         title: tags?.title ??"",
+         });}, [tags, isOpen]);
 
   if (!isOpen) return null;
 

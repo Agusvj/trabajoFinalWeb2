@@ -59,6 +59,31 @@ const updateCategory = async (id:number, data:any) =>{
             throw error;
         }
     };
+    const uploadCategoryImage = async(categoryId : number, imageFile: File) => {
+    try{
+      const formData = new FormData();
+      formData.append('file', imageFile);
 
-    return {createCategory, updateCategory, deleteCategory};
+      const res = await fetch(`http://161.35.104.211:8000/categories/${categoryId}/picture`,{
+        method: 'POST',
+        headers:{
+           Authorization: "Bearer agusvj",
+        },
+        body: formData,
+      });
+
+      if(!res.ok){
+        throw new Error ("Error al subir imagen");
+
+      }
+      const json = await res.json();
+      return json;
+
+    }catch(error){
+      console.error("API error:", error);
+      throw error;
+    }
+  };
+
+    return {createCategory, updateCategory, deleteCategory, uploadCategoryImage};
 };

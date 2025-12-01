@@ -1,5 +1,5 @@
 // src/components/admin/CategoryModal.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Category } from "../../types/entities";
 import {useCategories} from "../../data/crudCategories";
 
@@ -11,6 +11,11 @@ type CategoryModalProps = {
   onSave:(newCategory: Category) =>void;
 };
 
+type FormDataType = {
+  title: string;
+  description: string;
+  };
+
 export default function CategoryModal({
   isOpen,
   onClose,
@@ -18,12 +23,21 @@ export default function CategoryModal({
   mode,
   onSave,
 }: CategoryModalProps) {
-  const{createCategory, updateCategory } = useCategories();
-  const [formData, setFormData] = useState({
-    title: category?.title || "",
-    description: category?.description || "",
-    picture: category?.picture || "",
+  const{createCategory, updateCategory, uploadCategoryImage} = useCategories();
+  const [formData, setFormData] = useState<FormDataType>({
+    title: category?.title ?? "",
+    description: category?.description ??  "",
+    
   });
+  const [imageFile, setImageFile] = useState<File | null> (null);
+ 
+  useEffect(() =>{
+    setFormData({
+      title:category?.title ?? "",
+      description: category?.description ??  "",
+    });
+    setImageFile(null);
+  }, [category, isOpen]); 
 
   if (!isOpen) return null;
 
@@ -32,19 +46,26 @@ export default function CategoryModal({
     // TODO: API call logic
     const dataToSend = {
       ...formData,
-      picture:[formData.picture],
     };
     console.log("Form data:", formData);
+    try{
+      let savedCategory: Category;
+    
     if(mode === "create"){
-      const newCategory = await createCategory(dataToSend);
-      onSave(newCategory);
-     } else{
-      const updatedCategory = await updateCategory(category!.id, dataToSend);
-     onSave(updatedCategory);
+      savedCategory = await createCategory(dataToSend);
+    
+     }else{
+      savedCategory = await updateCategory(category!.id, dataToSend);
     }
+    if(imageFile){
+      await uploadCategoryImage(savedCategory.id, imageFile);
+    }
+    onSave(savedCategory);
     onClose();
-  };
-
+  }catch(error){
+    console.error("Error guardando categoria:", error);
+  }
+};
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -104,18 +125,19 @@ export default function CategoryModal({
               />
             </div>
 
-            <div>
+             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Imagen URL
+                Imagen de la Categoria
               </label>
               <input
-                type="text"
-                value={formData.picture}
-                onChange={(e) =>
-                  setFormData({ ...formData, picture: e.target.value })
-                }
+                type="file"
+                accept = "image/*"
+                onChange={(e) =>{
+                  const file = e.target.files?.[0] ||  null;
+                  setImageFile(file);
+                }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
-                placeholder="URL de la imagen"
+                
               />
             </div>
 

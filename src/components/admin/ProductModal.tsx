@@ -232,7 +232,6 @@ export default function ProductModal({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
               </button>
-
               {showTagDropdown && (
                 <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-y-auto z-20">
                   {availableTags.map(tag => (
@@ -252,8 +251,6 @@ export default function ProductModal({
               )}
             </div>
           </div>
-
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Imagen del producto 
