@@ -17,7 +17,7 @@ type FormDataType = {
   title: string;
   description: string;
   price: number;
-  category_id: number | ""; 
+  category_id: number | ""  | null; 
 };
 
 export default function ProductModal({
@@ -81,9 +81,11 @@ export default function ProductModal({
     // TODO: API call logic
     const dataToSend = {
       ...formData,
-      category_id : Number(formData.category_id),
       tag_ids: selectedTags,
        };
+       if(formData.category_id !==null && formData.category_id !== ""){
+        dataToSend.category_id = Number(formData.category_id);
+       }
     console.log("Form data:", formData);
      try{
       let savedProduct: Product;
@@ -190,14 +192,13 @@ export default function ProductModal({
                 Categoría
               </label>
               <select
-                value={formData.category_id}
+                value={formData.category_id ?? ""}
                 onChange={(e) =>
-                  setFormData({ ...formData, category_id: Number(e.target.value), })
+                  setFormData({ ...formData, category_id: e.target.value === "" ? null : Number(e.target.value), })
                 }
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-500"
-                required
               >
-                <option value="">Seleccionar categoría</option>
+                <option value="">-Sin categoría-</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.title}
