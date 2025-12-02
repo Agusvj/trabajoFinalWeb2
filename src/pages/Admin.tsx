@@ -21,23 +21,24 @@ export default function Admin() {
 
   const {getTags} = useTags();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const [productsData, categoriesData, tagsData] = await Promise.all([
-          getProducts(),
-          getCategories(),
-          getTags(),
-        ]);
-        setProducts(productsData);
-        setCategories(categoriesData);
-        setTags(tagsData);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchData = async () => {
+    try {
+      const [productsData, categoriesData, tagsData] = await Promise.all([
+        getProducts(),
+        getCategories(),
+        getTags(),
+      ]);
+      setProducts(productsData);
+      setCategories(categoriesData);
+      setTags(tagsData);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -128,13 +129,13 @@ export default function Admin() {
       </div>
 
       {activeTab === "products" && (
-        <ProductsTable products={filteredProducts} categories={categories} />
+        <ProductsTable products={filteredProducts} categories={categories} onDataChange={fetchData} />
       )}
       {activeTab === "categories" && (
-        <CategoriesTable categories={filteredCategories} />
+        <CategoriesTable categories={filteredCategories} onDataChange={fetchData} />
       )}
       {activeTab === "tags" && (
-        <TagsTable tags={filteredTags} />
+        <TagsTable tags={filteredTags} onDataChange={fetchData} />
       )}
     </div>
   );

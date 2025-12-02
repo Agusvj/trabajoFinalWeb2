@@ -12,11 +12,13 @@ import SuccessToast from "./SuccessToast";
 type ProductsTableProps = {
   products: Product[];
   categories: Category[];
+  onDataChange: () => void;
 };
 
 export default function ProductsTable({
   products,
   categories,
+  onDataChange,
 }: ProductsTableProps) {
   const [productsState, setProductsState] = useState<Product[]>(products);
 
@@ -61,15 +63,13 @@ export default function ProductsTable({
     try {
       if (!deleteModal.product) return;
       await deleteProduct(deleteModal.product.id);
-      setProductsState((prev) =>
-        prev.filter((p) => p.id !== deleteModal.product!.id)
-      );
       setDeleteModal({ isOpen: false });
       setSuccessToast({
         isOpen: true,
         message: "Producto eliminado exitosamente",
       });
       setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+      await onDataChange();
     } catch (error: any) {
       setDeleteModal({ isOpen: false });
       setErrorModal({
@@ -79,16 +79,7 @@ export default function ProductsTable({
     }
   };
 
-  const handleProductSaved = (newProduct: Product, isEdit: boolean) => {
-    setProductsState((prevProducts) => {
-      const exists = prevProducts.some((p) => p.id === newProduct.id);
-      if (exists) {
-        return prevProducts.map((p) =>
-          p.id === newProduct.id ? newProduct : p
-        );
-      }
-      return [...prevProducts, newProduct];
-    });
+  const handleProductSaved = async (newProduct: Product, isEdit: boolean) => {
     setSuccessToast({
       isOpen: true,
       message: isEdit
@@ -96,6 +87,7 @@ export default function ProductsTable({
         : "Producto creado exitosamente",
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    await onDataChange();
   };
 
   return (

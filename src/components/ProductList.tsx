@@ -41,9 +41,6 @@ export default function ProductList({ category }: ProductListCategory) {
     resetPage();
   };
 
-  if (loading) return <LoadingSpinner />;
-  if (products.length === 0) return <p>No hay productos en esta categoría</p>;
-
   return (
     <div className="bg-gray-100 mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <h2 className="text-xl font-serif font-bold text-gray-900 sm:text-3xl">
@@ -61,19 +58,27 @@ export default function ProductList({ category }: ProductListCategory) {
         maxPrice={maxPrice}
       />
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
-        {paginatedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {loading ? (
+        <LoadingSpinner />
+      ) : products.length === 0 ? (
+        <p>No hay productos en esta categoría</p>
+      ) : (
+        <>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
+            {paginatedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
 
-      {products.length > itemsPerPage && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onNext={nextPage}
-          onPrev={prevPage}
-        />
+          {products.length > itemsPerPage && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onNext={nextPage}
+              onPrev={prevPage}
+            />
+          )}
+        </>
       )}
     </div>
   );

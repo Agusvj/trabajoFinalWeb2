@@ -11,9 +11,10 @@ import SuccessToast from "./SuccessToast";
 
 type CategoriesTableProps = {
   categories: Category[];
+  onDataChange: () => void;
 };
 
-export default function CategoriesTable({ categories }: CategoriesTableProps) {
+export default function CategoriesTable({ categories, onDataChange }: CategoriesTableProps) {
   const [categoryState, setCategoryState] = useState<Category[]>(categories);
 
   useEffect(() => {
@@ -54,12 +55,10 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
     try {
       if (!deleteModal.category) return;
       await deleteCategory(deleteModal.category.id);
-      setCategoryState((prev) =>
-        prev.filter((p) => p.id !== deleteModal.category!.id)
-      );
       setDeleteModal({ isOpen: false });
       setSuccessToast({ isOpen: true, message: "Categoría eliminada exitosamente" });
       setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+      await onDataChange();
     } catch (error: any) {
       setDeleteModal({ isOpen: false });
       setErrorModal({
@@ -69,21 +68,13 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
     }
   };
 
-  const handleCategorySaved = (newCategory: Category, isEdit: boolean) => {
-    setCategoryState((prevCategories) => {
-      const exists = prevCategories.some((p) => p.id === newCategory.id);
-      if (exists) {
-        return prevCategories.map((p) =>
-          p.id === newCategory.id ? newCategory : p
-        );
-      }
-      return [...prevCategories, newCategory];
-    });
+  const handleCategorySaved = async (newCategory: Category, isEdit: boolean) => {
     setSuccessToast({ 
       isOpen: true, 
       message: isEdit ? "Categoría actualizada exitosamente" : "Categoría creada exitosamente" 
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    await onDataChange();
   };
 
   return (

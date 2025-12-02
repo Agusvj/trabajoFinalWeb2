@@ -15,9 +15,10 @@ type TagsModalState =
 
 type TagsTableProps = {
   tags: Tag[];
+  onDataChange: () => void;
 };
 
-export default function TagsTable({ tags }: TagsTableProps) {
+export default function TagsTable({ tags, onDataChange }: TagsTableProps) {
   const [tagsState, setTagsState] = useState<Tag[]>(tags);
 
   useEffect(() => {
@@ -57,12 +58,10 @@ export default function TagsTable({ tags }: TagsTableProps) {
     try {
       if (!deleteModal.tags) return;
       await deleteTag(deleteModal.tags.id);
-      setTagsState((prev) =>
-        prev.filter((p) => p.id !== deleteModal.tags!.id)
-      );
       setDeleteModal({ isOpen: false });
       setSuccessToast({ isOpen: true, message: "Etiqueta eliminada exitosamente" });
       setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+      await onDataChange();
     } catch (error: any) {
       setDeleteModal({ isOpen: false });
       setErrorModal({
@@ -72,19 +71,13 @@ export default function TagsTable({ tags }: TagsTableProps) {
     }
   };
 
-  const handleTagSaved = (newTag: Tag, isEdit: boolean) => {
-    setTagsState((prevTags) => {
-      const exists = prevTags.some((p) => p.id === newTag.id);
-      if (exists) {
-        return prevTags.map((p) => (p.id === newTag.id ? newTag : p));
-      }
-      return [...prevTags, newTag];
-    });
+  const handleTagSaved = async (newTag: Tag, isEdit: boolean) => {
     setSuccessToast({ 
       isOpen: true, 
       message: isEdit ? "Etiqueta actualizada exitosamente" : "Etiqueta creada exitosamente" 
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    await onDataChange();
   };
 
   return (

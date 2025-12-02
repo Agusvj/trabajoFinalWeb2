@@ -10,7 +10,7 @@ type ProductModalProps = {
   product?: Product;
   categories: Category[];
   mode: "create" | "edit";
-  onSave: (newProduct: Product) => void;
+  onSave: (newProduct: Product, isEdit?: boolean) => void;
 };
 
 type FormDataType = {
