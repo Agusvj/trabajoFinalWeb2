@@ -14,7 +14,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const hasImages = product.pictures?.length > 0;
 
   return (
-    <div className="bg-white">
+    <div className="bg-gray-100 mx-auto max-w-screen-xl">
       <div className="pt-6">
         <nav aria-label="Breadcrumb">
           <ol className="mx-auto flex max-w-7xl items-center space-x-2 px-4 sm:px-6 lg:px-8">
@@ -54,7 +54,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       : "https://placehold.co/500x500?text=Sin+Imagen"
                   }
                   alt={product.title}
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-full object-fill object-center"
                 />
               </div>
 
@@ -66,8 +66,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       onClick={() => setCurrentImageIndex(index)}
                       className={`h-3 w-3 rounded-full transition-all ${
                         currentImageIndex === index
-                          ? "bg-blue-800 w-8"
-                          : "bg-gray-300 hover:bg-gray-400"
+                          ? "bg-wood-700 w-8"
+                          : "bg-wood-400 hover:bg-gray-400"
                       }`}
                       aria-label={`Ver imagen ${index + 1}`}
                     />

@@ -1,8 +1,11 @@
-// src/pages/Admin.tsx
 import { useState, useEffect } from "react";
-import { getProducts } from "../data/products";
+import {
+  getProducts,
+  getProductsPaginated,
+  getProductsCount,
+} from "../data/products";
 import { getCategories } from "../data/categories";
-import {useTags} from "../data/crudTags";
+import { useTags } from "../data/crudTags";
 import type { Product, Category, Tag } from "../types/entities";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ProductsTable from "../components/admin/ProductsTable";
@@ -10,27 +13,47 @@ import CategoriesTable from "../components/admin/CategoriesTable";
 import TagsTable from "../components/admin/TagsTable";
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<"products" | "categories" | "tags">(
-    "products"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "products" | "categories" | "tags"
+  >("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {getTags} = useTags();
+  const { getTags } = useTags();
+
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalCategoriesCount, setTotalCategoriesCount] = useState(0);
+  const [totalTagsCount, setTotalTagsCount] = useState(0);
+  const [hasSearch, setHasSearch] = useState(false);
+  const [allProductsLoaded, setAllProductsLoaded] = useState(false);
 
   const fetchData = async () => {
     try {
-      const [productsData, categoriesData, tagsData] = await Promise.all([
-        getProducts(),
-        getCategories(),
-        getTags(),
-      ]);
+      const [productsData, categoriesData, tagsData, count] = await Promise.all(
+        [
+          getProductsPaginated(0, 10),
+          getCategories(),
+          getTags(),
+          getProductsCount(),
+        ]
+      );
       setProducts(productsData);
+      setAllProducts(productsData);
       setCategories(categoriesData);
+      setAllCategories(categoriesData);
       setTags(tagsData);
+      setAllTags(tagsData);
+      setTotalCount(count);
+      setTotalCategoriesCount(categoriesData.length);
+      setTotalTagsCount(tagsData.length);
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
@@ -42,21 +65,76 @@ export default function Admin() {
     fetchData();
   }, []);
 
-  const filteredProducts = products.filter(
-    (p) =>
-      p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setHasSearch(false);
+      async function loadPage() {
+        setSearchLoading(true);
+        const skip = (currentPage - 1) * 10;
+        const [productsData, categoriesData, tagsData] = await Promise.all([
+          getProductsPaginated(skip, 10),
+          getCategories(),
+          getTags(),
+        ]);
+        setProducts(productsData);
+        setAllProducts(productsData);
+        setCategories(categoriesData);
+        setAllCategories(categoriesData);
+        setTags(tagsData);
+        setAllTags(tagsData);
+        setAllProductsLoaded(false);
+        setSearchLoading(false);
+      }
+      loadPage();
+      return;
+    }
+  }, [currentPage, searchQuery]);
 
-  const filteredCategories = categories.filter(
-    (c) =>
-      c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    if (!searchQuery.trim()) return;
 
-  const filteredTags = tags.filter((t) =>
-    t.title?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const timer = setTimeout(async () => {
+      setCurrentPage(1);
+      setSearchLoading(true);
+
+      let productsToFilter = allProducts;
+
+      if (!allProductsLoaded) {
+        const allData = await getProducts();
+        setAllProducts(allData);
+        setAllProductsLoaded(true);
+        productsToFilter = allData;
+      }
+
+      const filteredProds = productsToFilter.filter(
+        (p) =>
+          p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      const filteredCats = allCategories.filter(
+        (c) =>
+          c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      const filteredTgs = allTags.filter((t) =>
+        t.title?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      setProducts(filteredProds);
+      setCategories(filteredCats);
+      setTags(filteredTgs);
+      setHasSearch(true);
+      setSearchLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, allProducts, allCategories, allTags, allProductsLoaded]);
+
+  const filteredProducts = products;
+  const filteredCategories = categories;
+  const filteredTags = tags;
 
   if (loading) return <LoadingSpinner />;
 
@@ -102,7 +180,7 @@ export default function Admin() {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            Productos ({products.length})
+            Productos ({hasSearch ? products.length : totalCount})
           </button>
           <button
             onClick={() => setActiveTab("categories")}
@@ -112,10 +190,10 @@ export default function Admin() {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            Categorías ({categories.length})
+            Categorías ({hasSearch ? categories.length : totalCategoriesCount})
           </button>
 
-           <button
+          <button
             onClick={() => setActiveTab("tags")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "tags"
@@ -123,20 +201,38 @@ export default function Admin() {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            Etiquetas ({tags.length})
+            Etiquetas ({hasSearch ? tags.length : totalTagsCount})
           </button>
         </nav>
       </div>
 
-      {activeTab === "products" && (
-        <ProductsTable products={filteredProducts} categories={categories} onDataChange={fetchData} />
-      )}
-      {activeTab === "categories" && (
-        <CategoriesTable categories={filteredCategories} onDataChange={fetchData} />
-      )}
-      {activeTab === "tags" && (
-        <TagsTable tags={filteredTags} onDataChange={fetchData} />
-      )}
+      <div className="relative">
+        {searchLoading && (
+          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
+            <LoadingSpinner />
+          </div>
+        )}
+        {activeTab === "products" && (
+          <ProductsTable
+            products={filteredProducts}
+            categories={categories}
+            onDataChange={fetchData}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalCount={totalCount}
+            hasSearch={hasSearch}
+          />
+        )}
+        {activeTab === "categories" && (
+          <CategoriesTable
+            categories={filteredCategories}
+            onDataChange={fetchData}
+          />
+        )}
+        {activeTab === "tags" && (
+          <TagsTable tags={filteredTags} onDataChange={fetchData} />
+        )}
+      </div>
     </div>
   );
 }

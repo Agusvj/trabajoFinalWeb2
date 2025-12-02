@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 type HomeFiltersProps = {
   filterByPrice: (minPrice: number, maxPrice: number) => void;
@@ -21,6 +21,8 @@ export default function HomeFilters({
   const [maxPriceInput, setMaxPriceInput] = useState<number>(0);
   const [checkedTags, setCheckedTags] = useState<Set<number>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const tagDetailsRef = useRef<HTMLDetailsElement>(null);
+  const priceDetailsRef = useRef<HTMLDetailsElement>(null);
 
   const handleReset = () => {
     resetProducts();
@@ -139,7 +141,15 @@ export default function HomeFilters({
 
       <div className="hidden sm:flex sm:gap-4">
         <div className="relative">
-          <details className="group [&_summary::-webkit-details-marker]:hidden">
+          <details 
+            ref={tagDetailsRef}
+            onToggle={(e) => {
+              if ((e.target as HTMLDetailsElement).open && priceDetailsRef.current) {
+                priceDetailsRef.current.open = false;
+              }
+            }}
+            className="group [&_summary::-webkit-details-marker]:hidden"
+          >
             <summary className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600">
               <span className="text-sm font-medium"> x Etiqueta </span>
               <span className="transition group-open:-rotate-180">
@@ -195,7 +205,15 @@ export default function HomeFilters({
         </div>
 
         <div className="relative">
-          <details className="group [&_summary::-webkit-details-marker]:hidden">
+          <details 
+            ref={priceDetailsRef}
+            onToggle={(e) => {
+              if ((e.target as HTMLDetailsElement).open && tagDetailsRef.current) {
+                tagDetailsRef.current.open = false;
+              }
+            }}
+            className="group [&_summary::-webkit-details-marker]:hidden"
+          >
             <summary className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600">
               <span className="text-sm font-medium"> Precio </span>
               <span className="transition group-open:-rotate-180">

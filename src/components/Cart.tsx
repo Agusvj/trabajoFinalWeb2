@@ -84,20 +84,21 @@ export default function Cart() {
                   />
 
                   <div>
-                    <h3 className="text-sm text-gray-900 truncate max-w-[80px]">
+                    <h3 className="text-sm text-gray-900 truncate max-w-[70px] sm:max-w-[80px]">
                       {item.product.title}
                     </h3>
 
                     <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                       <div>
                         <dt className="inline">
-                          Precio x Un. : {item.product.price}
+                          Precio x Un. : ${item.product.price}
                         </dt>
                       </div>
 
                       <div>
                         <dt className="inline">
-                          Precio Total: {item.product.price * item.quantity}
+                          Precio Total:$
+                          {(item.product.price * item.quantity).toFixed(2)}
                         </dt>
                       </div>
                     </dl>

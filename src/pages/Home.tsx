@@ -1,11 +1,9 @@
-// src/pages/Home.tsx
 import ProductCard from "../components/ProductCard";
 import HomeFilters from "../components/HomeFilters";
 import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Pagination from "../components/Pagination";
 import { useProductFilters } from "../hooks/useProductFilters";
-import { usePagination } from "../hooks/usePagination";
 import { useMemo } from "react";
 
 export default function Home() {
@@ -20,21 +18,30 @@ export default function Home() {
     filterByTag,
     filterBySearch,
     resetProducts,
+    totalCount,
+    hasFilters,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
   } = useProductFilters();
 
-  const { currentPage, itemsPerPage, nextPage, prevPage, resetPage } =
-    usePagination(10);
-
   const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return products.slice(start, start + itemsPerPage);
-  }, [products, currentPage, itemsPerPage]);
+    if (hasFilters) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return products.slice(start, start + itemsPerPage);
+    }
+    return products;
+  }, [products, currentPage, itemsPerPage, hasFilters]);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = hasFilters
+    ? Math.ceil(products.length / itemsPerPage)
+    : Math.ceil(totalCount / itemsPerPage);
+
+  const nextPage = () => setCurrentPage((prev) => prev + 1);
+  const prevPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
 
   const handleReset = () => {
     resetProducts();
-    resetPage();
   };
 
   return (
@@ -67,7 +74,9 @@ export default function Home() {
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
         ) : products.length === 0 ? (
-          <p className="text-center text-gray-600 mt-8">No se encontraron coincidencias</p>
+          <p className="text-center text-gray-600 mt-8">
+            No se encontraron coincidencias
+          </p>
         ) : (
           <>
             <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
@@ -77,7 +86,7 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            {products.length > itemsPerPage && (
+            {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

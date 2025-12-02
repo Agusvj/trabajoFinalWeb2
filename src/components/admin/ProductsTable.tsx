@@ -13,12 +13,20 @@ type ProductsTableProps = {
   products: Product[];
   categories: Category[];
   onDataChange: () => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalCount: number;
+  hasSearch: boolean;
 };
 
 export default function ProductsTable({
   products,
   categories,
   onDataChange,
+  currentPage,
+  setCurrentPage,
+  totalCount,
+  hasSearch,
 }: ProductsTableProps) {
   const [productsState, setProductsState] = useState<Product[]>(products);
 
@@ -42,14 +50,22 @@ export default function ProductsTable({
   }>({ isOpen: false });
 
   const { deleteProduct } = useProducts();
-  const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
+  const itemsPerPage = 10;
 
   const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return productsState.slice(start, start + itemsPerPage);
-  }, [productsState, currentPage, itemsPerPage]);
+    if (hasSearch) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return productsState.slice(start, start + itemsPerPage);
+    }
+    return productsState;
+  }, [productsState, currentPage, itemsPerPage, hasSearch]);
 
-  const totalPages = Math.ceil(productsState.length / itemsPerPage);
+  const totalPages = hasSearch
+    ? Math.ceil(productsState.length / itemsPerPage)
+    : Math.ceil(totalCount / itemsPerPage);
+
+  const nextPage = () => setCurrentPage(currentPage + 1);
+  const prevPage = () => setCurrentPage(Math.max(1, currentPage - 1));
 
   const handleEdit = (product: Product) => {
     setProductModal({ isOpen: true, mode: "edit", product });
@@ -206,7 +222,7 @@ export default function ProductsTable({
           </div>
         )}
 
-        {productsState.length > itemsPerPage && (
+        {totalPages > 1 && (
           <div className="px-6 py-4">
             <Pagination
               currentPage={currentPage}

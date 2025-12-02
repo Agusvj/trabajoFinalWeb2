@@ -17,7 +17,7 @@ interface CartContextType {
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
-  getCartTotal: () => number;
+  getCartTotal: () => string;
   clearCart: () => void;
 }
 
@@ -73,10 +73,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
   const getCartTotal = () => {
-    return cartItems.reduce(
+    const total = cartItems.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
     );
+    return total.toFixed(2);
   };
 
   const clearCart = () => {

@@ -24,21 +24,30 @@ export default function ProductList({ category }: ProductListCategory) {
     filterByTag,
     filterBySearch,
     resetProducts,
+    totalCount,
+    hasFilters,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
   } = useProductFilters(category);
 
-  const { currentPage, itemsPerPage, nextPage, prevPage, resetPage } =
-    usePagination(10);
-
   const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return products.slice(start, start + itemsPerPage);
-  }, [products, currentPage, itemsPerPage]);
+    if (hasFilters) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return products.slice(start, start + itemsPerPage);
+    }
+    return products;
+  }, [products, currentPage, itemsPerPage, hasFilters]);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = hasFilters 
+    ? Math.ceil(products.length / itemsPerPage)
+    : Math.ceil(totalCount / itemsPerPage);
+
+  const nextPage = () => setCurrentPage(prev => prev + 1);
+  const prevPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
 
   const handleReset = () => {
     resetProducts();
-    resetPage();
   };
 
   return (
@@ -70,7 +79,7 @@ export default function ProductList({ category }: ProductListCategory) {
             ))}
           </div>
 
-          {products.length > itemsPerPage && (
+          {totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
