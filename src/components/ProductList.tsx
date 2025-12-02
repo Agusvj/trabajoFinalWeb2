@@ -61,7 +61,7 @@ export default function ProductList({ category }: ProductListCategory) {
       {loading ? (
         <LoadingSpinner />
       ) : products.length === 0 ? (
-        <p>No hay productos en esta categoría</p>
+        <p className="text-center text-gray-600 mt-8">No se encontraron coincidencias</p>
       ) : (
         <>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">

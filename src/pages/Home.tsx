@@ -66,6 +66,8 @@ export default function Home() {
           <LoadingSpinner />
         ) : error ? (
           <p className="text-center font-bold text-red-600">{error}</p>
+        ) : products.length === 0 ? (
+          <p className="text-center text-gray-600 mt-8">No se encontraron coincidencias</p>
         ) : (
           <>
             <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">
