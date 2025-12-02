@@ -18,13 +18,15 @@ export default function HomeFilters({
   maxPrice,
 }: HomeFiltersProps) {
   const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPriceInput, setMaxPriceInput] = useState<number>(maxPrice);
+  const [maxPriceInput, setMaxPriceInput] = useState<number>(0);
   const [checkedTags, setCheckedTags] = useState<Set<number>>(new Set());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleReset = () => {
     resetProducts();
     setCheckedTags(new Set());
+    setMinPrice(0);
+    setMaxPriceInput(0);
   };
 
   const handleTagChange = (tagId: number) => {
@@ -91,12 +93,14 @@ export default function HomeFilters({
                 <input
                   type="number"
                   placeholder="Desde"
+                  value={minPrice || ""}
                   className="w-full rounded-md border-gray-200 text-sm p-2"
                   onChange={(e) => setMinPrice(Number(e.target.value))}
                 />
                 <input
                   type="number"
                   placeholder="Hasta"
+                  value={maxPriceInput || ""}
                   className="w-full rounded-md border-gray-200 text-sm p-2"
                   onChange={(e) => setMaxPriceInput(Number(e.target.value))}
                 />
@@ -238,6 +242,7 @@ export default function HomeFilters({
                         type="number"
                         id="FilterPriceFrom"
                         placeholder="From"
+                        value={minPrice || ""}
                         className="w-full rounded-md border-gray-200 shadow-xs sm:text-sm"
                         onChange={(e) => setMinPrice(Number(e.target.value))}
                       />
@@ -252,6 +257,7 @@ export default function HomeFilters({
                         type="number"
                         id="FilterPriceTo"
                         placeholder="To"
+                        value={maxPriceInput || ""}
                         className="w-full rounded-md border-gray-200 shadow-xs sm:text-sm"
                         onChange={(e) => setMaxPriceInput(Number(e.target.value))}
                       />

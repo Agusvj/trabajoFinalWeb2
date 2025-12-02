@@ -22,15 +22,21 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="relative border border-gray-100 bg-white p-6 ">
         {product.tags.length > 0 ? (
-          product.tags?.map((tag) => (
-            <span
-              key={tag.id}
-              className="bg-wood-600 px-3 py-1.5 text-xs text-white font-medium whitespace-nowrap mr-2 rounded-sm"
-            >
-              {" "}
-              {tag.title}{" "}
-            </span>
-          ))
+          <>
+            {product.tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag.id}
+                className="bg-wood-600 px-3 py-1.5 text-xs text-white font-medium whitespace-nowrap mr-2 rounded-sm"
+              >
+                {tag.title}
+              </span>
+            ))}
+            {product.tags.length > 2 && (
+              <span className="bg-gray-200 px-3 py-1.5 text-xs text-gray-700 font-medium whitespace-nowrap rounded-sm">
+                +{product.tags.length - 2}
+              </span>
+            )}
+          </>
         ) : (
           <span className="bg-transparent px-3 py-1.5 text-xs font-medium whitespace-nowrap mr-2">
             {" "}
@@ -53,7 +59,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <p className="mt-1.5 text-sm text-gray-700">
-          ${product.price ? product.price * 1000 : "Price not available"}
+          ${product.price ? product.price : "Price not available"}
         </p>
 
         <form className="mt-4">

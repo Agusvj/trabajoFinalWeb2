@@ -1,11 +1,13 @@
 // src/components/admin/CategoriesTable.tsx
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Category } from "../../types/entities";
 import CategoryModal from "./CategoryModal";
 import DeleteModal from "./DeleteModal";
 import Pagination from "../Pagination";
 import { useCategories } from "../../data/crudCategories";
 import { usePagination } from "../../hooks/usePagination";
+import ErrorModal from "./ErrorModal";
+import SuccessToast from "./SuccessToast";
 
 type CategoriesTableProps = {
   categories: Category[];
@@ -13,6 +15,10 @@ type CategoriesTableProps = {
 
 export default function CategoriesTable({ categories }: CategoriesTableProps) {
   const [categoryState, setCategoryState] = useState<Category[]>(categories);
+
+  useEffect(() => {
+    setCategoryState(categories);
+  }, [categories]);
   const [categoryModal, setCategoryModal] = useState<{
     isOpen: boolean;
     mode: "create" | "edit";
@@ -23,6 +29,8 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
     isOpen: boolean;
     category?: Category;
   }>({ isOpen: false });
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
+  const [successToast, setSuccessToast] = useState({ isOpen: false, message: "" });
 
   const { deleteCategory } = useCategories();
   const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
@@ -49,15 +57,19 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
       setCategoryState((prev) =>
         prev.filter((p) => p.id !== deleteModal.category!.id)
       );
-
-      console.log("Deleting category:", deleteModal.category);
       setDeleteModal({ isOpen: false });
-    } catch (error) {
-      console.error("Error deleting product:", error);
+      setSuccessToast({ isOpen: true, message: "Categoría eliminada exitosamente" });
+      setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    } catch (error: any) {
+      setDeleteModal({ isOpen: false });
+      setErrorModal({
+        isOpen: true,
+        message: error.message || "Error al eliminar la categoría",
+      });
     }
   };
 
-  const handleCategorySaved = (newCategory: Category) => {
+  const handleCategorySaved = (newCategory: Category, isEdit: boolean) => {
     setCategoryState((prevCategories) => {
       const exists = prevCategories.some((p) => p.id === newCategory.id);
       if (exists) {
@@ -67,6 +79,11 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
       }
       return [...prevCategories, newCategory];
     });
+    setSuccessToast({ 
+      isOpen: true, 
+      message: isEdit ? "Categoría actualizada exitosamente" : "Categoría creada exitosamente" 
+    });
+    setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
   };
 
   return (
@@ -187,6 +204,15 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
         title="Eliminar Categoría"
         message={`¿Estás seguro de que deseas eliminar "${deleteModal.category?.title}"? Esta acción no se puede deshacer.`}
       />
+
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ isOpen: false, message: "" })}
+        title="Error al eliminar"
+        message={errorModal.message}
+      />
+
+      <SuccessToast isOpen={successToast.isOpen} message={successToast.message} />
     </>
   );
 }

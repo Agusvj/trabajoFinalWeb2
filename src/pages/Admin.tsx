@@ -17,6 +17,7 @@ export default function Admin() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {getTags} = useTags();
 
@@ -40,6 +41,22 @@ export default function Admin() {
     fetchData();
   }, []);
 
+  const filteredProducts = products.filter(
+    (p) =>
+      p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCategories = categories.filter(
+    (c) =>
+      c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredTags = tags.filter((t) =>
+    t.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -47,6 +64,32 @@ export default function Admin() {
       <h1 className="text-3xl font-serif font-bold text-gray-900 mb-8">
         Panel de Administración
       </h1>
+
+      <div className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar..."
+            className="w-full rounded-sm border border-gray-300 px-4 py-3 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-stone-500"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute left-3 top-3.5 h-5 w-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+      </div>
 
       <div className="border-b border-gray-200 mb-6">
         <nav className="-mb-px flex space-x-8">
@@ -85,13 +128,13 @@ export default function Admin() {
       </div>
 
       {activeTab === "products" && (
-        <ProductsTable products={products} categories={categories} />
+        <ProductsTable products={filteredProducts} categories={categories} />
       )}
       {activeTab === "categories" && (
-        <CategoriesTable categories={categories} />
+        <CategoriesTable categories={filteredCategories} />
       )}
       {activeTab === "tags" && (
-        <TagsTable tags={tags} />
+        <TagsTable tags={filteredTags} />
       )}
     </div>
   );

@@ -83,7 +83,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </h1>
 
                 <p className="text-4xl font-bold text-wood-800 mb-6">
-                  ${product.price * 1000}
+                  ${product.price}
                 </p>
 
                 {product.tags.length > 0 && (

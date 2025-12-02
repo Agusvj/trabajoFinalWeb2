@@ -10,9 +10,10 @@ export const useProductFilters = (categoryFilter?: Category) => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<string>("");
   const [priceRange, setPriceRange] = useState<{
-    min: number;
-    max: number;
+    min: number | null;
+    max: number | null;
   } | null>(null);
 
   useEffect(() => {
@@ -62,40 +63,46 @@ export const useProductFilters = (categoryFilter?: Category) => {
     }
 
     if (priceRange) {
-      filtered = filtered.filter(
-        (product) =>
-          product.price! * 1000 >= priceRange.min &&
-          product.price! * 1000 <= priceRange.max
-      );
+      filtered = filtered.filter((product) => {
+        const price = product.price!;
+        const minValid = priceRange.min === null || price >= priceRange.min;
+        const maxValid = priceRange.max === null || price <= priceRange.max;
+        return minValid && maxValid;
+      });
+    }
+
+    if (sortOrder) {
+      if (sortOrder === "alphabeticalAsc") {
+        filtered.sort((a, b) =>
+          a.title!.toLowerCase() > b.title!.toLowerCase() ? 1 : -1
+        );
+      } else if (sortOrder === "alphabeticalDesc") {
+        filtered.sort((a, b) =>
+          a.title!.toLowerCase() < b.title!.toLowerCase() ? 1 : -1
+        );
+      } else if (sortOrder === "menorAmayor") {
+        filtered.sort((a, b) => (a.price! < b.price! ? 1 : -1));
+      } else if (sortOrder === "mayorAmenor") {
+        filtered.sort((a, b) => (a.price! > b.price! ? 1 : -1));
+      }
     }
 
     setProducts(filtered);
-  }, [productsBackup, searchQuery, selectedTags, priceRange]);
+  }, [productsBackup, searchQuery, selectedTags, priceRange, sortOrder]);
 
   const filterBySearch = (query: string) => {
     setSearchQuery(query);
   };
 
   const filterByPrice = (min: number, max: number) => {
-    setPriceRange({ min, max });
+    setPriceRange({
+      min: min || null,
+      max: max || null,
+    });
   };
 
   const filterByValue = (value: string) => {
-    const sortedProducts = [...products];
-    if (value === "alphabeticalAsc") {
-      sortedProducts.sort((a, b) =>
-        a.title!.toLowerCase() > b.title!.toLowerCase() ? 1 : -1
-      );
-    } else if (value === "alphabeticalDesc") {
-      sortedProducts.sort((a, b) =>
-        a.title!.toLowerCase() < b.title!.toLowerCase() ? 1 : -1
-      );
-    } else if (value === "menorAmayor") {
-      sortedProducts.sort((a, b) => (a.price! < b.price! ? 1 : -1));
-    } else if (value === "mayorAmenor") {
-      sortedProducts.sort((a, b) => (a.price! > b.price! ? 1 : -1));
-    }
-    setProducts(sortedProducts);
+    setSortOrder(value);
   };
 
   const filterByTag = (tagId: number) => {
@@ -111,9 +118,10 @@ export const useProductFilters = (categoryFilter?: Category) => {
     setSelectedTags([]);
     setSearchQuery("");
     setPriceRange(null);
+    setSortOrder("");
   };
 
-  const maxPrice = Math.max(...productsBackup.map((p) => p.price * 1000), 0);
+  const maxPrice = Math.max(...productsBackup.map((p) => p.price), 0);
 
   return {
     products,
@@ -126,5 +134,6 @@ export const useProductFilters = (categoryFilter?: Category) => {
     filterByTag,
     filterBySearch,
     resetProducts,
+    priceRange,
   };
 };

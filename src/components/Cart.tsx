@@ -91,14 +91,13 @@ export default function Cart() {
                     <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                       <div>
                         <dt className="inline">
-                          Precio x Un. : {item.product.price * 1000}
+                          Precio x Un. : {item.product.price}
                         </dt>
                       </div>
 
                       <div>
                         <dt className="inline">
-                          Precio Total:{" "}
-                          {item.product.price * 1000 * item.quantity}
+                          Precio Total: {item.product.price * item.quantity}
                         </dt>
                       </div>
                     </dl>
@@ -180,7 +179,7 @@ export default function Cart() {
                   {cartItems.reduce((total, item) => total + item.quantity, 0)}
                 </p>
                 <p className="text-lg font-bold text-gray-900 whitespace-nowrap">
-                  Total: ${getCartTotal() * 1000}
+                  Total: ${getCartTotal()}
                 </p>
               </div>
             )}

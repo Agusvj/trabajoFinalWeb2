@@ -198,9 +198,13 @@ export default function Checkout() {
         </div>
 
         <div>
-          <h2 className="text-xl font-serif font-semibold mb-4">
+          <h2 className="text-xl font-serif font-semibold mb-1">
             Resumen del pedido
           </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Cantidad productos:{" "}
+            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+          </p>
           <div className="p-4 rounded-sm bg-white">
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {cartItems.map((item) => (
@@ -217,7 +221,7 @@ export default function Checkout() {
                     </p>
                   </div>
                   <p className="font-medium">
-                    ${item.product.price * 1000 * item.quantity}
+                    ${item.product.price * item.quantity}
                   </p>
                 </div>
               ))}
@@ -226,7 +230,7 @@ export default function Checkout() {
             <div className="border-t pt-4 mt-4">
               <div className="flex justify-between text-lg font-bold">
                 <span>Total:</span>
-                <span>${getCartTotal() * 1000}</span>
+                <span>${getCartTotal()}</span>
               </div>
             </div>
           </div>

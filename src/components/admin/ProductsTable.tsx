@@ -1,11 +1,13 @@
 // src/components/admin/ProductsTable.tsx
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Product, Category } from "../../types/entities";
 import ProductModal from "./ProductModal";
 import DeleteModal from "./DeleteModal";
 import Pagination from "../Pagination";
 import { useProducts } from "../../data/crudProduct";
 import { usePagination } from "../../hooks/usePagination";
+import ErrorModal from "./ErrorModal";
+import SuccessToast from "./SuccessToast";
 
 type ProductsTableProps = {
   products: Product[];
@@ -17,11 +19,20 @@ export default function ProductsTable({
   categories,
 }: ProductsTableProps) {
   const [productsState, setProductsState] = useState<Product[]>(products);
+
+  useEffect(() => {
+    setProductsState(products);
+  }, [products]);
   const [productModal, setProductModal] = useState<{
     isOpen: boolean;
     mode: "create" | "edit";
     product?: Product;
   }>({ isOpen: false, mode: "create" });
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
+  const [successToast, setSuccessToast] = useState({
+    isOpen: false,
+    message: "",
+  });
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -53,16 +64,22 @@ export default function ProductsTable({
       setProductsState((prev) =>
         prev.filter((p) => p.id !== deleteModal.product!.id)
       );
-
-      console.log("Deleting product:", deleteModal.product);
-
       setDeleteModal({ isOpen: false });
-    } catch (error) {
-      console.error("Error deleting product:", error);
+      setSuccessToast({
+        isOpen: true,
+        message: "Producto eliminado exitosamente",
+      });
+      setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    } catch (error: any) {
+      setDeleteModal({ isOpen: false });
+      setErrorModal({
+        isOpen: true,
+        message: error.message || "Error al eliminar el producto",
+      });
     }
   };
 
-  const handleProductSaved = (newProduct: Product) => {
+  const handleProductSaved = (newProduct: Product, isEdit: boolean) => {
     setProductsState((prevProducts) => {
       const exists = prevProducts.some((p) => p.id === newProduct.id);
       if (exists) {
@@ -72,6 +89,13 @@ export default function ProductsTable({
       }
       return [...prevProducts, newProduct];
     });
+    setSuccessToast({
+      isOpen: true,
+      message: isEdit
+        ? "Producto actualizado exitosamente"
+        : "Producto creado exitosamente",
+    });
+    setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
   };
 
   return (
@@ -142,7 +166,7 @@ export default function ProductsTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-medium text-gray-900">
-                      ${product.price * 1000}
+                      ${product.price}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -217,6 +241,18 @@ export default function ProductsTable({
         onConfirm={confirmDelete}
         title="Eliminar Producto"
         message={`¿Estás seguro de que deseas eliminar "${deleteModal.product?.title}"? Esta acción no se puede deshacer.`}
+      />
+
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ isOpen: false, message: "" })}
+        title="Error al eliminar"
+        message={errorModal.message}
+      />
+
+      <SuccessToast
+        isOpen={successToast.isOpen}
+        message={successToast.message}
       />
     </>
   );

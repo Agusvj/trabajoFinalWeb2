@@ -1,11 +1,13 @@
 // src/components/admin/TagsTable.tsx
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Tag } from "../../types/entities";
 import TagsModal from "./TagsModal";
 import DeleteModal from "./DeleteModal";
 import Pagination from "../Pagination";
 import { useTags } from "../../data/crudTags";
 import { usePagination } from "../../hooks/usePagination";
+import ErrorModal from "./ErrorModal";
+import SuccessToast from "./SuccessToast";
 
 type TagsModalState =
   | { isOpen: boolean; mode: "create"; tags?: never }
@@ -17,10 +19,16 @@ type TagsTableProps = {
 
 export default function TagsTable({ tags }: TagsTableProps) {
   const [tagsState, setTagsState] = useState<Tag[]>(tags);
+
+  useEffect(() => {
+    setTagsState(tags);
+  }, [tags]);
   const [tagsModal, setTagsModal] = useState<TagsModalState>({
     isOpen: false,
     mode: "create",
   });
+  const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
+  const [successToast, setSuccessToast] = useState({ isOpen: false, message: "" });
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -49,16 +57,22 @@ export default function TagsTable({ tags }: TagsTableProps) {
     try {
       if (!deleteModal.tags) return;
       await deleteTag(deleteModal.tags.id);
-      setTagsState((prev) => prev.filter((p) => p.id !== deleteModal.tags!.id));
-
-      console.log("Deleting tag:", deleteModal.tags);
+      setTagsState((prev) =>
+        prev.filter((p) => p.id !== deleteModal.tags!.id)
+      );
       setDeleteModal({ isOpen: false });
-    } catch (error) {
-      console.error("etiqueta eliminada:", error);
+      setSuccessToast({ isOpen: true, message: "Etiqueta eliminada exitosamente" });
+      setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
+    } catch (error: any) {
+      setDeleteModal({ isOpen: false });
+      setErrorModal({
+        isOpen: true,
+        message: error.message || "Error al eliminar la etiqueta",
+      });
     }
   };
 
-  const handleTagSaved = (newTag: Tag) => {
+  const handleTagSaved = (newTag: Tag, isEdit: boolean) => {
     setTagsState((prevTags) => {
       const exists = prevTags.some((p) => p.id === newTag.id);
       if (exists) {
@@ -66,6 +80,11 @@ export default function TagsTable({ tags }: TagsTableProps) {
       }
       return [...prevTags, newTag];
     });
+    setSuccessToast({ 
+      isOpen: true, 
+      message: isEdit ? "Etiqueta actualizada exitosamente" : "Etiqueta creada exitosamente" 
+    });
+    setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
   };
 
   return (
@@ -173,6 +192,15 @@ export default function TagsTable({ tags }: TagsTableProps) {
         title="Eliminar Etiqueta"
         message={`¿Estás seguro de que deseas eliminar "${deleteModal.tags?.title}"? Esta acción no se puede deshacer.`}
       />
+
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={() => setErrorModal({ isOpen: false, message: "" })}
+        title="Error al eliminar"
+        message={errorModal.message}
+      />
+
+      <SuccessToast isOpen={successToast.isOpen} message={successToast.message} />
     </>
   );
 }
