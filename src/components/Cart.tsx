@@ -175,6 +175,10 @@ export default function Cart() {
           <div className="space-y-4 text-center">
             {cartItems.length >= 1 && (
               <div className="text-center py-2 border-t border-gray-300">
+                <p className="text-sm text-gray-600 whitespace-nowrap">
+                  Cant. Productos:{" "}
+                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                </p>
                 <p className="text-lg font-bold text-gray-900 whitespace-nowrap">
                   Total: ${getCartTotal() * 1000}
                 </p>
