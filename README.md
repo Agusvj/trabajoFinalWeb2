@@ -1,7 +1,8 @@
 # Proyecto final integrador de Web 2 (Universidad Nacional de Tierra del Fuego)
 
 Este es el proyecto final integrador para la materia Web 2 de la Universidad Nacional de Tierra del Fuego. Se trata de una aplicación web de comercio electrónico (e-commerce) desarrollada con React y TypeScript, que incluye un panel de administración para la gestión de productos, categorías y etiquetas.
-El negocio fantasia elegido es de una curaderia con selección de vinos, fiambres y mas. (Winery)
+El negocio fantasia elegido es de una curaderia con selección de vinos, fiambres y mas. (Winery).
+
 Alumnos:
 
 - Paniagua, Cristina
@@ -43,16 +44,15 @@ Alumnos:
 
 ### Estructura del Proyecto
 
-src/
-├── components/ # Componentes reutilizables
-│ ├── admin/ # Componentes del panel de administración
-│ └── layout/ # Componentes de layout (Navbar, Footer)
-├── context/ # Context API (CartContext)
-├── data/ # Funciones de API y CRUD
-├── hooks/ # Custom hooks
-├── pages/ # Páginas de la aplicación
-├── routes/ # Configuración de rutas
-└── types/ # Definiciones de TypeScript(Tipos)
+- components/ # Componentes reutilizables
+- admin/ # Componentes del panel de administración
+- layout/ # Componentes de layout (Navbar, Footer)
+- context/ # Context API (CartContext)
+- data/ # Funciones de API y CRUD
+- hooks/ # Custom hooks
+- pages/ # Páginas de la aplicación
+- routes/ # Configuración de rutas
+- types/ # Definiciones de TypeScript(Tipos)
 
 ### Herramientas de Desarrollo
 
