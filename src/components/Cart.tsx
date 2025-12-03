@@ -31,185 +31,173 @@ export default function Cart() {
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
-          isVisible ? "opacity-30" : "opacity-0"
+        className={`fixed inset-0 bg-black transition-opacity duration-300 z-40 ${
+          isVisible ? "opacity-50" : "opacity-0"
         }`}
         onClick={closeCart}
       />
 
       <div
-        className={`fixed w-[95%] lg:w-screen lg:max-w-sm border border-gray-600 bg-gray-300 px-4 py-8 sm:px-6 lg:px-8 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-10 top-[130px] transition-all duration-300 transform ${
-          isVisible
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-4 scale-95"
+        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-gray-300 shadow-2xl z-50 flex flex-col transition-transform duration-300 ${
+          isVisible ? "translate-x-0" : "translate-x-full"
         }`}
-        aria-modal="true"
-        role="dialog"
-        tabIndex={-1}
       >
-        <button
-          className="absolute end-4 top-4 text-gray-600 transition hover:scale-110"
-          onClick={closeCart}
-        >
-          <span className="sr-only">Close cart</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-5"
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 className="text-xl font-serif font-bold text-gray-900">
+            Carrito (
+            {cartItems.reduce((total, item) => total + item.quantity, 0)})
+          </h2>
+          <button
+            onClick={closeCart}
+            className="text-gray-400 hover:text-gray-600 transition"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
 
-        <div className="mt-4 space-y-6">
-          <ul className="space-y-4 max-h-64 overflow-y-auto">
-            {cartItems.length >= 1 ? (
-              cartItems.map((item) => (
-                <li className="flex items-center gap-4" key={item.product.id}>
+        {/* Items List */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {cartItems.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <svg
+                className="w-16 h-16 text-gray-300 mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              <p className="text-gray-500 text-lg">Tu carrito está vacío</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {cartItems.map((item) => (
+                <div
+                  key={item.product.id}
+                  className="flex gap-4 p-4 bg-gray-50 rounded-lg"
+                >
                   <img
                     src={
                       item.product.pictures?.length > 0
                         ? `http://161.35.104.211:8000${item.product.pictures[0]}`
-                        : "https://placehold.co/64x64?text=Sin+Imagen"
+                        : "https://placehold.co/80x80?text=Sin+Imagen"
                     }
                     alt={item.product.title}
-                    className="size-16 rounded-sm object-cover"
+                    className="w-20 h-20 rounded-md object-cover"
                   />
 
-                  <div>
-                    <h3 className="text-sm text-gray-900 truncate max-w-[70px] sm:max-w-[80px]">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 truncate">
                       {item.product.title}
                     </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      ${item.product.price}
+                    </p>
 
-                    <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
-                      <div>
-                        <dt className="inline">
-                          Precio x Un. : ${item.product.price}
-                        </dt>
+                    <div className="flex items-center gap-3 mt-3">
+                      <div className="flex items-center border border-gray-300 rounded-md">
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.product.id, item.quantity - 1)
+                          }
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                        >
+                          −
+                        </button>
+                        <span className="px-3 py-1 text-sm font-medium border-x border-gray-300">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.product.id, item.quantity + 1)
+                          }
+                          className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                        >
+                          +
+                        </button>
                       </div>
 
-                      <div>
-                        <dt className="inline">
-                          Precio Total:$
-                          {(item.product.price * item.quantity).toFixed(2)}
-                        </dt>
-                      </div>
-                    </dl>
-                  </div>
-
-                  <div className="flex flex-1 items-center justify-end gap-2">
-                    <form>
-                      <div>
-                        <label htmlFor="Quantity" className="sr-only">
-                          {" "}
-                          Quantity{" "}
-                        </label>
-
-                        <div className="flex items-center rounded-sm border border-gray-200">
-                          <button
-                            type="button"
-                            className="size-6 leading-6 text-gray-600 transition hover:opacity-75"
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity - 1)
-                            }
-                          >
-                            −
-                          </button>
-
-                          <input
-                            type="number"
-                            id="Quantity"
-                            value={item.quantity}
-                            className="h-8 w-10 border-transparent text-center [-moz-appearance:textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                          />
-
-                          <button
-                            type="button"
-                            className="size-6 leading-6 text-gray-600 transition hover:opacity-75"
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity + 1)
-                            }
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-
-                    <button
-                      className="text-gray-600 transition hover:text-red-600 mr-1"
-                      onClick={() => removeFromCart(item.product.id)}
-                    >
-                      <span className="sr-only">Remove item</span>
-
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="size-4"
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        className="text-red-500 hover:text-red-700 ml-auto"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                </li>
-              ))
-            ) : (
-              <li className="text-center">Aun no hay productos</li>
-            )}
-          </ul>
 
-          <div className="space-y-4 text-center">
-            {cartItems.length >= 1 && (
-              <div className="text-center py-2 border-t border-gray-300">
-                <p className="text-sm text-gray-600 whitespace-nowrap">
-                  Cant. Productos:{" "}
-                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
-                </p>
-                <p className="text-lg font-bold text-gray-900 whitespace-nowrap">
-                  Total: ${getCartTotal()}
-                </p>
-              </div>
-            )}
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900">
+                      ${(item.product.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-            {cartItems.length >= 1 ? (
-              <button
-                onClick={() => clearCart()}
-                className="block rounded-sm bg-red-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600 w-full"
-              >
-                Borrar carrito
-              </button>
-            ) : null}
+        {/* Footer */}
+        {cartItems.length > 0 && (
+          <div className="border-t border-gray-200 p-6 space-y-4">
+            <div className="flex justify-between items-center text-lg font-bold">
+              <span>Total:</span>
+              <span className="text-wood-800">${getCartTotal()}</span>
+            </div>
 
             <Link
               to="/checkout"
               onClick={closeCart}
-              className="block rounded-sm bg-wood-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-wood-800"
+              className="block w-full bg-wood-700 text-white text-center py-3 rounded-md font-medium hover:bg-wood-800 transition"
             >
-              Checkout
+              Finalizar Compra
             </Link>
 
             <button
-              onClick={closeCart}
-              className="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600"
+              onClick={clearCart}
+              className="block w-full bg-gray-100 text-gray-700 text-center py-3 rounded-md font-medium hover:bg-gray-200 transition"
             >
-              Continue shopping
+              Vaciar Carrito
+            </button>
+
+            <button
+              onClick={closeCart}
+              className="block w-full text-sm text-gray-500 hover:text-gray-700 transition"
+            >
+              Continuar comprando
             </button>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
