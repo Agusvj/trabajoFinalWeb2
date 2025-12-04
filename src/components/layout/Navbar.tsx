@@ -103,6 +103,12 @@ export default function Navbar() {
 
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
+                <Link to="/admin" className="hidden md:block">
+                  <button className="bg-wood-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-wood-700 transition">
+                    Admin
+                  </button>
+                </Link>
+
                 <button className="relative" onClick={toggleCart}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -182,6 +188,15 @@ export default function Navbar() {
                             Cargando...
                           </li>
                         )}
+                        <li className="p-2 border-t border-wood-300 w-full text-center">
+                          <Link
+                            to="/admin"
+                            onClick={() => setOpen(false)}
+                            className="text-gray-700 font-semibold transition hover:text-gray-900 dark:text-white dark:hover:text-white/75"
+                          >
+                            Admin
+                          </Link>
+                        </li>
                       </ul>
                     </nav>
                   </div>
