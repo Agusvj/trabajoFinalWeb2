@@ -5,7 +5,6 @@ import ProductModal from "./ProductModal";
 import DeleteModal from "./DeleteModal";
 import Pagination from "../Pagination";
 import { useProducts } from "../../data/crudProduct";
-import { usePagination } from "../../hooks/usePagination";
 import ErrorModal from "./ErrorModal";
 import SuccessToast from "./SuccessToast";
 
@@ -95,12 +94,12 @@ export default function ProductsTable({
     }
   };
 
-  const handleProductSaved = async (newProduct: Product, isEdit: boolean) => {
+  const handleProductSaved = async (newProduct: Product, isEdit?: boolean) => {
     setSuccessToast({
       isOpen: true,
       message: isEdit
-        ? "Producto actualizado exitosamente"
-        : "Producto creado exitosamente",
+        ? `Producto ${newProduct.title} actualizado exitosamente`
+        : `Producto ${newProduct.title} creado exitosamente`,
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
     await onDataChange();

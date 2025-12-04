@@ -29,7 +29,10 @@ export default function TagsTable({ tags, onDataChange }: TagsTableProps) {
     mode: "create",
   });
   const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
-  const [successToast, setSuccessToast] = useState({ isOpen: false, message: "" });
+  const [successToast, setSuccessToast] = useState({
+    isOpen: false,
+    message: "",
+  });
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -59,7 +62,10 @@ export default function TagsTable({ tags, onDataChange }: TagsTableProps) {
       if (!deleteModal.tags) return;
       await deleteTag(deleteModal.tags.id);
       setDeleteModal({ isOpen: false });
-      setSuccessToast({ isOpen: true, message: "Etiqueta eliminada exitosamente" });
+      setSuccessToast({
+        isOpen: true,
+        message: "Etiqueta eliminada exitosamente",
+      });
       setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
       await onDataChange();
     } catch (error: any) {
@@ -72,9 +78,11 @@ export default function TagsTable({ tags, onDataChange }: TagsTableProps) {
   };
 
   const handleTagSaved = async (newTag: Tag, isEdit: boolean) => {
-    setSuccessToast({ 
-      isOpen: true, 
-      message: isEdit ? "Etiqueta actualizada exitosamente" : "Etiqueta creada exitosamente" 
+    setSuccessToast({
+      isOpen: true,
+      message: isEdit
+        ? `Etiqueta ${newTag.title} actualizada exitosamente`
+        : `Etiqueta ${newTag.title} creada exitosamente`,
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
     await onDataChange();
@@ -193,7 +201,10 @@ export default function TagsTable({ tags, onDataChange }: TagsTableProps) {
         message={errorModal.message}
       />
 
-      <SuccessToast isOpen={successToast.isOpen} message={successToast.message} />
+      <SuccessToast
+        isOpen={successToast.isOpen}
+        message={successToast.message}
+      />
     </>
   );
 }

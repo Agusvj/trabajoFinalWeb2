@@ -9,14 +9,14 @@ export type TagsModalProps =
       onClose: () => void;
       tags?: Tag;
       mode: "create";
-      onSave: (newTag: Tag) => void;
+      onSave: (newTag: Tag, isEdit: boolean) => void;
     }
   | {
       isOpen: boolean;
       onClose: () => void;
       tags: Tag;
       mode: "edit";
-      onSave: (newTag: Tag) => void;
+      onSave: (newTag: Tag, isEdit: boolean) => void;
     };
 
 export default function TagsModal({

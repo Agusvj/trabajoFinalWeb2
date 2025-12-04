@@ -14,7 +14,10 @@ type CategoriesTableProps = {
   onDataChange: () => void;
 };
 
-export default function CategoriesTable({ categories, onDataChange }: CategoriesTableProps) {
+export default function CategoriesTable({
+  categories,
+  onDataChange,
+}: CategoriesTableProps) {
   const [categoryState, setCategoryState] = useState<Category[]>(categories);
 
   useEffect(() => {
@@ -31,7 +34,10 @@ export default function CategoriesTable({ categories, onDataChange }: Categories
     category?: Category;
   }>({ isOpen: false });
   const [errorModal, setErrorModal] = useState({ isOpen: false, message: "" });
-  const [successToast, setSuccessToast] = useState({ isOpen: false, message: "" });
+  const [successToast, setSuccessToast] = useState({
+    isOpen: false,
+    message: "",
+  });
 
   const { deleteCategory } = useCategories();
   const { currentPage, itemsPerPage, nextPage, prevPage } = usePagination(10);
@@ -56,22 +62,34 @@ export default function CategoriesTable({ categories, onDataChange }: Categories
       if (!deleteModal.category) return;
       await deleteCategory(deleteModal.category.id);
       setDeleteModal({ isOpen: false });
-      setSuccessToast({ isOpen: true, message: "Categoría eliminada exitosamente" });
+      setSuccessToast({
+        isOpen: true,
+        message: "Categoría eliminada exitosamente",
+      });
       setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
       await onDataChange();
-    } catch (error: any) {
+    } catch (error: unknown) {
       setDeleteModal({ isOpen: false });
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Error al eliminar la categoría";
       setErrorModal({
         isOpen: true,
-        message: error.message || "Error al eliminar la categoría",
+        message: errorMessage,
       });
     }
   };
 
-  const handleCategorySaved = async (newCategory: Category, isEdit: boolean) => {
-    setSuccessToast({ 
-      isOpen: true, 
-      message: isEdit ? "Categoría actualizada exitosamente" : "Categoría creada exitosamente" 
+  const handleCategorySaved = async (
+    newCategory: Category,
+    isEdit: boolean
+  ) => {
+    setSuccessToast({
+      isOpen: true,
+      message: isEdit
+        ? `Categoría (${newCategory.title}) actualizada exitosamente`
+        : `Categoría (${newCategory.title}) creada exitosamente`,
     });
     setTimeout(() => setSuccessToast({ isOpen: false, message: "" }), 3000);
     await onDataChange();
@@ -203,7 +221,10 @@ export default function CategoriesTable({ categories, onDataChange }: Categories
         message={errorModal.message}
       />
 
-      <SuccessToast isOpen={successToast.isOpen} message={successToast.message} />
+      <SuccessToast
+        isOpen={successToast.isOpen}
+        message={successToast.message}
+      />
     </>
   );
 }

@@ -7,7 +7,6 @@ import SearchBar from "./SearchBar";
 import LoadingSpinner from "./LoadingSpinner";
 import Pagination from "./Pagination";
 import { useProductFilters } from "../hooks/useProductFilters";
-import { usePagination } from "../hooks/usePagination";
 
 type ProductListCategory = {
   category: Category;
@@ -39,12 +38,12 @@ export default function ProductList({ category }: ProductListCategory) {
     return products;
   }, [products, currentPage, itemsPerPage, hasFilters]);
 
-  const totalPages = hasFilters 
+  const totalPages = hasFilters
     ? Math.ceil(products.length / itemsPerPage)
     : Math.ceil(totalCount / itemsPerPage);
 
-  const nextPage = () => setCurrentPage(prev => prev + 1);
-  const prevPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
+  const nextPage = () => setCurrentPage((prev) => prev + 1);
+  const prevPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
 
   const handleReset = () => {
     resetProducts();
@@ -70,7 +69,9 @@ export default function ProductList({ category }: ProductListCategory) {
       {loading ? (
         <LoadingSpinner />
       ) : products.length === 0 ? (
-        <p className="text-center text-gray-600 mt-8">No se encontraron coincidencias</p>
+        <p className="text-center text-gray-600 mt-8">
+          No se encontraron coincidencias
+        </p>
       ) : (
         <>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 grid-cols-1">

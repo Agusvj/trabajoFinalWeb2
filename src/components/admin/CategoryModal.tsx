@@ -8,7 +8,7 @@ type CategoryModalProps = {
   onClose: () => void;
   category?: Category;
   mode: "create" | "edit";
-  onSave: (newCategory: Category) => void;
+  onSave: (newCategory: Category, isEdit: boolean) => void;
 };
 
 type FormDataType = {
