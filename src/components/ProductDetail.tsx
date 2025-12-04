@@ -54,7 +54,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       : "https://placehold.co/500x500?text=Sin+Imagen"
                   }
                   alt={product.title}
-                  className="h-full w-full object-fill object-center"
+                  className="h-full w-full lg:object-fill object-cover object-center"
                 />
               </div>
 
